@@ -2,22 +2,18 @@
 * Copyright (c) 2012 Francesco Dalpra'; Licensed MIT */
 
 (function($) {
-
-  // Collection method.
-  $.fn.awesome = function() {
-    return this.each(function() {
-      $(this).html('awesome');
-    });
+  $.fn.wrl = function() {
   };
-
-  // Static method.
-  $.awesome = function() {
-    return 'awesome';
-  };
-
-  // Custom selector.
-  $.expr[':'].awesome = function(elem) {
-    return elem.textContent.indexOf('awesome') >= 0;
-  };
-
 }(jQuery));
+
+function Config() {
+	this.load = function(config){
+		this.res = config;
+	};
+	this.jsInfo = function(){
+	};
+	this.css = function(){
+	};
+	this.html = function(){
+	};
+}
