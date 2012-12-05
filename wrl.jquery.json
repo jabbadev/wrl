@@ -1,0 +1,28 @@
+{
+  "name": "wrl",
+  "title": "Web Resource Loader",
+  "description": "javascript and css loader",
+  "version": "0.1.0",
+  "homepage": "",
+  "author": {
+    "name": "Francesco Dalpra'",
+    "email": "jabba.dev@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "none"
+  },
+  "bugs": {
+    "url": ""
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "/blob/master/LICENSE-MIT"
+    }
+  ],
+  "dependencies": {
+    "jquery": "*"
+  },
+  "keywords": []
+}
