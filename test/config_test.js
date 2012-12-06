@@ -21,20 +21,49 @@
       notStrictEqual(actual, expected, [message])
       raises(block, [expected], [message])
   */
-	var config = new window.Config();
-	
+	//var config = new window.Config();
+	module('test [ Resource ] object',{
+		setup: function(){
+			this.res1 = new window.Resource("a",{url: "a.js", require: ["c","d" ]});
+			this.res2 = new window.Resource("b",{url: "b.js", depon: [ "a" ]});
+			this.virt = new window.Resource("virt",{depon: ["a","b"]});
+		}
+	});
+	test('test Resource',function(){
+		equal(this.res1.get('url'),"a.js","getter ok");
+		equal(this.res1.get('loaded'),false,"resource is not loaded");
+		this.res1.set('loaded',true);
+		notEqual(this.res1.get('loaded'),false,"resource is loaded");
+		equal(this.res1.isLoaded(),true,"resource is loaded method");
+		ok(this.res1.get('depon') == null,"depon not set");
+		ok(this.res2.get('depon') != null,"depon is set");
+		deepEqual(this.res1.get('require'),["c","d" ],"require is set");
+		equal(this.virt.isVirtual(),true,"Is virtual resource");
+	});	
+	module('test Config',{
+		setup: function(){
+			this.config = new window.Config();
+		}
+	});
 	test('Resources [ config ]',function(){
-		ok(typeof(config)==="object","oggetto corretamente istanziato");		
-		config.load({
-			js: { a: { url: "a.js" }, b: { url: "b.js" }, c: { url: "c.js" },
-				  d: { url: "d.js" }, e: { url: "e.js" }, f: { url: "f.js" }},
-			css: {a: { url: "a.css" }, b: { url: "b.js" } },
-			html: {
-				a: { url: "a.htm" }
-			}
+		ok(typeof(this.config)==="object","oggetto corretamente istanziato");		
+		
+		this.config.load({
+			js:{'aggrega': { require: ['a','c'] }, a: {url: "a.js", require: ['d'] }, b: {url: "b.js"}, c: {url: "c.js"},
+				d: {url: "d.js", require: ['e','f'] }, e: {url: "e.js"}, f: {url: "f.js"}},
+			css:{a: {url: "a.css" }, b: {url: "b.js" } },
+			html:{ a: {url: "a.htm"}}
 		});
 		
-		deepEqual(config.js().a,{ url: "a.js" },"access to js config resource a");
+		var reslist = this.config.getJsReq('aggrega');
+		for( var i in reslist ){
+			console.log(reslist[i].get('url'));
+		}
+		
+		//equal(this.config.js().a.get('url'),"a.js","access to all js resources");
+		//equal(this.config.js('a').get('url'),"a.js","access to 'a' js resource");
+		//var resAB = this.config.js(['a','b']);
+		//equal(resAB.b.get('url'),"b.js","access to 'a','b' js resource");
 	});
 
 }(jQuery));
