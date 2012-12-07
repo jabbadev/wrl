@@ -49,21 +49,18 @@
 		ok(typeof(this.config)==="object","oggetto corretamente istanziato");		
 		
 		this.config.load({
-			js:{'aggrega': { require: ['a','c'] }, a: {url: "a.js", require: ['d'] }, b: {url: "b.js"}, c: {url: "c.js"},
+			js:{'virtual': { require: ['a','c'] }, a: {url: "a.js", require: ['d'] }, b: {url: "b.js"}, c: {url: "c.js"},
 				d: {url: "d.js", require: ['e','f'] }, e: {url: "e.js"}, f: {url: "f.js"}},
 			css:{a: {url: "a.css" }, b: {url: "b.js" } },
 			html:{ a: {url: "a.htm"}}
 		});
 		
-		var reslist = this.config.getJsReq('aggrega');
+		var reslist = this.config.getJsReq('virtual');
+		var jslist = [];
 		for( var i in reslist ){
-			console.log(reslist[i].get('url'));
+			jslist.push(reslist[i].get('url'));
 		}
-		
-		//equal(this.config.js().a.get('url'),"a.js","access to all js resources");
-		//equal(this.config.js('a').get('url'),"a.js","access to 'a' js resource");
-		//var resAB = this.config.js(['a','b']);
-		//equal(resAB.b.get('url'),"b.js","access to 'a','b' js resource");
+		deepEqual(jslist,["e.js", "f.js", "d.js", "a.js", "c.js"],"resource to load");
 	});
 
 }(jQuery));

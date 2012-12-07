@@ -1,4 +1,4 @@
-/*! Web Resource Loader - v0.1.0 - 2012-12-06
+/*! Web Resource Loader - v0.1.0 - 2012-12-07
 * Copyright (c) 2012 Francesco Dalpra'; Licensed MIT */
 
 (function($) {
@@ -6,6 +6,7 @@
   };
 }(jQuery));
 
+/*global Resource:true*/
 function Config() {
 	var conf = {};
 	
@@ -25,22 +26,39 @@ function Config() {
 		}
 	}
 	
+	function _buildChain(resType,resName,chainType,resChain){
+		var res = _getres(resType,resName);
+		var resList = res.get(chainType);
+		var _dummy;
+		if (resList){
+			for(var rn in resList){
+				_buildChain(resType,resList[rn],chainType,resChain);
+			}
+			_dummy = res.isVirtual()||resChain.push(res);
+		}
+		else {
+			_dummy = res.isVirtual()||resChain.push(res);
+		}
+	}
+	
+	this.getJsReq = function(resName){
+		var resChain = [];
+		_buildChain('js',resName,'require',resChain);
+		return resChain;
+	};
+	
+	this.getJsDep = function(resName){
+		var resChain = [];
+		_buildChain('js',resName,'depon',resChain);
+		return resChain;
+	};
+	
 	this.load = function(config){
 		for(var resType in {js: true,css: true,html: true }){
 			conf[resType]={};
 			for(var resName in config[resType]){
-				conf[resType][resName]= new window.Resource(resName,config[resType][resName]);
+				conf[resType][resName]= new Resource(resName,config[resType][resName]);
 			}
 		}
-	};
-	
-	this.js = function(names){
-		return _getres('js',names);
-	};
-	this.css = function(names){
-		return _getres('css',names);
-	};
-	this.html = function(names){
-		return _getres('html',names);
 	};
 }

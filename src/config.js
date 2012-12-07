@@ -1,3 +1,4 @@
+/*global Resource:true*/
 function Config() {
 	var conf = {};
 	
@@ -15,30 +16,29 @@ function Config() {
 			}
 			return out;
 		}
-	};
-
-	_buildChain = function(resType,resName,chainType,resChain){
+	}
+	
+	function _buildChain(resType,resName,chainType,resChain){
 		var res = _getres(resType,resName);
 		var resList = res.get(chainType);
+		var _dummy;
 		if (resList){
 			for(var rn in resList){
 				_buildChain(resType,resList[rn],chainType,resChain);
 			}
-			res.isVirtual() || resChain.push(res);
-			console.log('isvirtual: ',res.isVirtual);
-			//resChain.push(res);
+			_dummy = res.isVirtual()||resChain.push(res);
 		}
 		else {
-			res.isVirtual() || resChain.push(res);
-			console.log('isvirtual: ',res.isVirtual);
-			//resChain.push(res);
+			_dummy = res.isVirtual()||resChain.push(res);
 		}
-	};	
+	}
+	
 	this.getJsReq = function(resName){
 		var resChain = [];
 		_buildChain('js',resName,'require',resChain);
 		return resChain;
 	};
+	
 	this.getJsDep = function(resName){
 		var resChain = [];
 		_buildChain('js',resName,'depon',resChain);
@@ -49,9 +49,8 @@ function Config() {
 		for(var resType in {js: true,css: true,html: true }){
 			conf[resType]={};
 			for(var resName in config[resType]){
-				conf[resType][resName]= new window.Resource(resName,config[resType][resName]);
+				conf[resType][resName]= new Resource(resName,config[resType][resName]);
 			}
 		}
 	};
-	
 }
