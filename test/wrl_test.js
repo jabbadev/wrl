@@ -29,7 +29,7 @@
 			this.virt = new window.Resource("virt",{depon: ["a","b"]});
 		}
 	});
-	test('test Resource',function(){
+	test('test [ Resource ]',function(){
 		equal(this.res1.get('url'),"a.js","getter ok");
 		equal(this.res1.get('loaded'),false,"resource is not loaded");
 		this.res1.set('loaded',true);
@@ -40,17 +40,18 @@
 		deepEqual(this.res1.get('require'),["c","d" ],"require is set");
 		equal(this.virt.isVirtual(),true,"Is virtual resource");
 	});	
-	module('test Config',{
+	module('test [ Config ] object',{
 		setup: function(){
 			this.config = new window.Config();
 		}
 	});
-	test('Resources [ config ]',function(){
+	test('test [ Config ]',function(){
 		ok(typeof(this.config)==="object","oggetto corretamente istanziato");		
 		
 		this.config.load({
 			js:{'virtual': { require: ['a','c'] }, a: {url: "a.js", require: ['d'] }, b: {url: "b.js"}, c: {url: "c.js"},
-				d: {url: "d.js", require: ['e','f'] }, e: {url: "e.js"}, f: {url: "f.js"}},
+				d: {url: "d.js", require: ['e','f'], depon: [ "z" ] }, e: {url: "e.js"}, f: {url: "f.js"},
+				z: { url: "z.js", depon: ["p","q"] },p: {url: "p.js"},q: {url: "q.js"} },
 			css:{a: {url: "a.css" }, b: {url: "b.js" } },
 			html:{ a: {url: "a.htm"}}
 		});
@@ -60,7 +61,15 @@
 		for( var i in reslist ){
 			jslist.push(reslist[i].get('url'));
 		}
-		deepEqual(jslist,["e.js", "f.js", "d.js", "a.js", "c.js"],"resource to load");
+		deepEqual(jslist,["e.js", "f.js", "d.js", "a.js", "c.js"],"required resources to load");
+		
+		reslist = this.config.getJsDep('d');
+		jslist = [];
+		for( i in reslist ){
+			jslist.push(reslist[i].get('url'));
+		}
+		deepEqual(jslist,["p.js", "q.js", "z.js", "d.js"],"dependency resources to load");
+		
 	});
 
 }(jQuery));

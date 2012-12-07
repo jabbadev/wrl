@@ -2,8 +2,19 @@
 * Copyright (c) 2012 Francesco Dalpra'; Licensed MIT */
 
 (function($) {
-  $.fn.wrl = function() {
-  };
+	$.extend({ wrl: {
+		managers: {},
+		addManager: function(mn,config){
+			var manager = $({
+				name: mn,
+				
+			
+			});
+			
+			this.managers[mn] = manager;
+			return manager[0];
+		}
+	}});
 }(jQuery));
 
 /*global Resource:true*/
