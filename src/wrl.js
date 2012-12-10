@@ -7,17 +7,31 @@
  */
 (function($) {
 	$.extend({ wrl: {
-		managers: {},
-		addManager: function(mn,config){
-			var manager = $({
-				name: mn,
-				loadJS: function(jsName){
-					console.log(this,jsName);
-				}
-			});
+		loaders: {},
+		addLoader: function(ln,config){
+			var loader = $(new Loader(ln,config));
 			
-			manager.loadJS = $.proxy(manager[0].loadJS,manager[0]);
-			return manager;
+			loader[0].trigger = $.proxy(loader.trigger,loader);
+			loader[0].bind = $.proxy(loader.bind,loader);
+			
+			loader.loadJS = $.proxy(loader[0].loadJS,loader[0]);
+			loader.loadCSS = $.proxy(loader[0].loadJS,loader[0]);
+			loader.loadHTML = $.proxy(loader[0].loadJS,loader[0]);
+			
+			this.loaders[ln] = loader;
+			return loader;
+		},
+		loadJS: function(ln,id,jsName){
+			return this.loaders[ln].loadJS(id,jsName);
+			//return loaders[ln];
+		},
+		loadCSS: function(ln,id,jsName){
+			this.loaders[ln].loadCSS(id,jsName);
+			return loaders[ln];
+		},
+		loadHTML: function(ln,id,jsName){
+			this.loaders[ln].loadHTML(id,jsName);
+			return loaders[ln];
 		}
 	}});
 }(jQuery));
