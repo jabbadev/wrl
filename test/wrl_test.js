@@ -30,14 +30,14 @@
 		}
 	});
 	test('test [ Resource ]',function(){
-		equal(this.res1.get('url'),"a.js","getter ok");
-		equal(this.res1.get('loaded'),false,"resource is not loaded");
-		this.res1.set('loaded',true);
-		notEqual(this.res1.get('loaded'),false,"resource is loaded");
+		equal(this.res1.url(),"a.js","getter ok");
+		equal(this.res1.isLoaded(),false,"resource is not loaded");
+		this.res1.isLoaded(true);
+		notEqual(this.res1.isLoaded(),false,"resource is loaded");
 		equal(this.res1.isLoaded(),true,"resource is loaded method");
-		ok(this.res1.get('depon') == null,"depon not set");
-		ok(this.res2.get('depon') != null,"depon is set");
-		deepEqual(this.res1.get('require'),["c","d" ],"require is set");
+		ok(this.res1.depon() == null,"depon not set");
+		ok(this.res2.depon() != null,"depon is set");
+		deepEqual(this.res1.require(),["c","d" ],"require is set");
 		equal(this.virt.isVirtual(),true,"Is virtual resource");
 	});	
 	module('test [ Config ] object',{
@@ -59,14 +59,14 @@
 		var reslist = this.config.getJsReq('virtual');
 		var jslist = [];
 		for( var i in reslist ){
-			jslist.push(reslist[i].get('url'));
+			jslist.push(reslist[i].url());
 		}
 		deepEqual(jslist,["e.js", "f.js", "d.js", "a.js", "c.js"],"required resources to load");
 		
 		reslist = this.config.getJsDep('d');
 		jslist = [];
 		for( i in reslist ){
-			jslist.push(reslist[i].get('url'));
+			jslist.push(reslist[i].url());
 		}
 		deepEqual(jslist,["p.js", "q.js", "z.js", "d.js"],"dependency resources to load");
 		

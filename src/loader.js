@@ -7,6 +7,10 @@ function Loader(ln,config){
 			attachJS: function(){},
 			attachCSS: function(){},
 			loadJS:function(id,resName){
+				
+				
+				
+				
 				var $this = this;
 				setTimeout(function(){
 					$this.trigger('jsLoaded');

@@ -20,7 +20,7 @@ function Config() {
 	
 	function _buildChain(resType,resName,chainType,resChain){
 		var res = _getres(resType,resName);
-		var resList = res.get(chainType);
+		var resList = res[chainType]();
 		var _dummy;
 		if (resList){
 			for(var rn in resList){
