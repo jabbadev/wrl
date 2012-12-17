@@ -49,7 +49,7 @@ function Config() {
 		for(var resType in {js: true,css: true,html: true }){
 			conf[resType]={};
 			for(var resName in config[resType]){
-				conf[resType][resName]= new Resource(resName,config[resType][resName]);
+				conf[resType][resName]= new Resource(resName,resType,config[resType][resName]);
 			}
 		}
 	};

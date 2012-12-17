@@ -24,9 +24,9 @@
 	//var config = new window.Config();
 	module('test [ Resource ] object',{
 		setup: function(){
-			this.res1 = new window.Resource("a",{url: "a.js", require: ["c","d" ]});
-			this.res2 = new window.Resource("b",{url: "b.js", depon: [ "a" ]});
-			this.virt = new window.Resource("virt",{depon: ["a","b"]});
+			this.res1 = new window.Resource("a","js",{ id: "aRes", url: "a.js", require: ["c","d" ]});
+			this.res2 = new window.Resource("b","js",{url: "b.js", depon: [ "a" ]});
+			this.virt = new window.Resource("virt","js",{depon: ["a","b"]});
 		}
 	});
 	test('test [ Resource ]',function(){
@@ -39,6 +39,8 @@
 		ok(this.res2.depon() != null,"depon is set");
 		deepEqual(this.res1.require(),["c","d" ],"require is set");
 		equal(this.virt.isVirtual(),true,"Is virtual resource");
+		
+		console.log('tag: ',this.res1.tag());
 	});	
 	module('test [ Config ] object',{
 		setup: function(){

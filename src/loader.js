@@ -8,9 +8,6 @@ function Loader(ln,config){
 			attachCSS: function(){},
 			loadJS:function(id,resName){
 				
-				
-				
-				
 				var $this = this;
 				setTimeout(function(){
 					$this.trigger('jsLoaded');
