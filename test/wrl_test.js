@@ -25,7 +25,7 @@
 	module('test [ Resource ] object',{
 		setup: function(){
 			this.res1 = new window.Resource("a","js",{ id: "aRes", url: "a.js", require: ["c","d" ]});
-			this.res2 = new window.Resource("b","js",{url: "b.js", depon: [ "a" ]});
+			this.res2 = new window.Resource("b","js",{ defer: "true", url: "b.js", depon: [ "a" ]});
 			this.virt = new window.Resource("virt","js",{depon: ["a","b"]});
 		}
 	});
@@ -40,7 +40,9 @@
 		deepEqual(this.res1.require(),["c","d" ],"require is set");
 		equal(this.virt.isVirtual(),true,"Is virtual resource");
 		
+		
 		console.log('tag: ',this.res1.tag());
+		console.log('tag: ',this.res2.tag());
 	});	
 	module('test [ Config ] object',{
 		setup: function(){

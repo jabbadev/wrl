@@ -3,9 +3,10 @@ function Resource(resName,resType,resConf){
 	//this.get = function(prop){ return res[prop];};
 	var buildHtmlTag = {
 			js: function(){
-				var out = '<script src="' + res.url + '" ';
-				out += ( res.id ) && 'id="' + res.id + '"' || "";
-				out += "></script>";
+				var out = '<script type="text/script" src="' + res.url + '"';
+				out += ( res.id ) && ' id="' + res.id + '"' || "";
+				out += ( res.defer ) && ' defer="defer"' || "";
+				out += "></script>"; 
 				return out;
 			}
 	};
@@ -35,6 +36,6 @@ function Resource(resName,resType,resConf){
 	res.depon = resConf.depon || null;
 	res.require =resConf.require || null;
 	res.url = resConf.url;
-	res.deferred = resConf.deferred || false;
+	res.defer = resConf.defer || false;
 	res.loaded = false;
 }
