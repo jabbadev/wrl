@@ -1,6 +1,5 @@
 function Resource(resName,resType,resConf){
-	//this.set = function(prop,value){res[prop]=value;};
-	//this.get = function(prop){ return res[prop];};
+	
 	var buildHtmlTag = {
 			js: function(){
 				var out = '<script type="text/script" src="' + res.url + '"';
@@ -8,21 +7,40 @@ function Resource(resName,resType,resConf){
 				out += ( res.defer ) && ' defer="defer"' || "";
 				out += "></script>"; 
 				return out;
+			},
+			css: function(){
+				var out = '<link type="text/css" rel="stylesheet" href="' + res.url + '"';
+				out += ( res.id ) && ' id="' + res.id + '"' || "";
+				out += ( res.media ) && ' media="' + res.media + '"' || "";
+				out += "></link>"; 
+				return out;
 			}
 	};
 	
+	/* Public function */
 	this.isLoaded = function(value){
 		if(typeof(value) !== "undefined"){
 			res.loaded = value;	
 		}
 		return res.loaded;
 	};
-	
+	this.isLoading = function(value){
+		if(typeof(value) !== "undefined"){
+			res.loading = value;	
+		}
+		return res.loading;
+	};
+	this.ready = function(){
+		if ( res.loaded && !res.loading ){
+			return true;
+		}
+		return false;
+	};
 	this.url = function(){return res.url;};
 	this.depon = function(){return res.depon;};
 	this.require = function(){return res.require;};
-	this.isVirtual = function(){return res.virtual;};
-	
+	this.name = function(){return res.name;};
+	this.isVirtual = function(){return res.virtual;};	
 	this.tag = function(){
 		return buildHtmlTag[res.type]();
 	};
@@ -38,4 +56,6 @@ function Resource(resName,resType,resConf){
 	res.url = resConf.url;
 	res.defer = resConf.defer || false;
 	res.loaded = false;
+	res.loading = false;
+	res.media = resConf.media || null;
 }

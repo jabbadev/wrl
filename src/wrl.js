@@ -21,16 +21,16 @@
 			this.loaders[ln] = loader;
 			return loader;
 		},
-		loadJS: function(ln,id,jsName){
-			return this.loaders[ln].loadJS(id,jsName);
+		loadJS: function(ln,jsName){
+			return this.loaders[ln].loadJS(jsName);
 			//return loaders[ln];
 		},
-		loadCSS: function(ln,id,jsName){
-			this.loaders[ln].loadCSS(id,jsName);
+		loadCSS: function(ln,jsName){
+			this.loaders[ln].loadCSS(jsName);
 			return loaders[ln];
 		},
-		loadHTML: function(ln,id,jsName){
-			this.loaders[ln].loadHTML(id,jsName);
+		loadHTML: function(ln,jsName){
+			this.loaders[ln].loadHTML(jsName);
 			return loaders[ln];
 		}
 	}});

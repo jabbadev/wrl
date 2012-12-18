@@ -33,16 +33,62 @@ function Config() {
 		}
 	}
 	
-	this.getJsReq = function(resName){
+	function _getRes(resType,resName,chainType){
 		var resChain = [];
-		_buildChain('js',resName,'require',resChain);
+		_buildChain(resType,resName,chainType,resChain);
 		return resChain;
+	}
+	
+	function _resReady(resType,resName){
+		var resources = _getRes(resType,resName,'depon').concat(_getRes(resType,resName,'require'));
+		resources.pop();
+		var status = {
+			ready: false,
+			tot: resources.length,
+			ready:[],
+			resurces:[],
+			nrr: 0,
+			loadPerc: function(){
+				return (this.nrr*100/this.tot).toFixed(2);
+			}
+		};
+		for(var i in resources){
+			var res = resources[i];
+			if(res.ready()){
+				status.nrr++;
+				status.ready.push(res.name());
+			}
+			else {
+				status.resurces.push(res.name());
+			}
+		}
+		status.ready = ( status.tot == status.nrr ); 
+		return status;
 	};
 	
-	this.getJsDep = function(resName){
-		var resChain = [];
-		_buildChain('js',resName,'depon',resChain);
-		return resChain;
+	function _resLoaded(resType,resName,value){
+		conf[resType][resName].isLoaded(value);
+	}
+	function _resLoading(resType,resName,value){
+		conf[resType][resName].isLoading(value);
+	}
+	
+	/* Public methods */
+	
+	this.jsLoaded = function(resName,value){_resLoaded('js',resName,value);};
+	this.jsLoading = function(resName,value){_resLoading('js',resName,value);};
+	
+	this.getJsReq = function(resName){ return _getRes('js',resName,'require'); };
+	this.getJsDep = function(resName){ return _getRes('js',resName,'depon'); };
+	this.getCssReq = function(resName){ return _getRes('css',resName,'require'); };
+	this.getCssDep = function(resName){ return _getRes('css',resName,'depon'); };
+		
+	this.jsReady = function(resName){
+		return _resReady('js',resName);
+	};
+	
+	this.cssReady = function(resName){
+		return _resReady('css',resName);
 	};
 	
 	this.load = function(config){
