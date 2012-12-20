@@ -29,6 +29,7 @@
 			this.res2 = new Resource("b","js",{ defer: "true", url: "b.js", depon: [ "a" ]});
 			this.virt = new Resource("virt","js",{depon: ["a","b"]});
 			this.css = new Resource("a","css",{ id: "cssID", url: "a.css", media: "print" });
+			this.load = new Resource("a","js",{ url: "../libs/test-res/a.js" });
 		}
 	});
 	
@@ -52,6 +53,8 @@
 		this.res2.isLoaded(true);
 		this.res2.isLoading(false);
 		equal(this.res2.ready(),true,"Resource res2 is ready");
+		
+		console.log(this.load.tag());
 	});
 	
 	module('test [ Config ] object',{

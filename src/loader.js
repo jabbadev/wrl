@@ -9,7 +9,6 @@ function Loader(ln,config){
 			loadJS:function(resName){
 				var require = this.config.getJsReq(resName);
 				var dep = this.config.getJsDep(resName);
-				
 				if ( dep.length > 1 ){
 					require.pop();
 				}

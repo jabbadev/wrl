@@ -36,6 +36,10 @@ function Resource(resName,resType,resConf){
 		}
 		return false;
 	};
+	this.attach = function(callback){
+		
+	};
+	
 	this.url = function(){return res.url;};
 	this.depon = function(){return res.depon;};
 	this.require = function(){return res.require;};
