@@ -52,10 +52,18 @@ module.exports = function(grunt) {
         jQuery: true
       }
     },
-    uglify: {}
+    uglify: {},
+    connect: {
+        wrl: {
+          port: 80,
+          base: '.'
+        }
+      }
   });
 
   // Default task.
   grunt.registerTask('default', 'lint qunit concat min');
+  
+  grunt.loadNpmTasks('grunt-connect');
 
 };

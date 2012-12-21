@@ -17,6 +17,22 @@ function Resource(resName,resType,resConf){
 			}
 	};
 	
+	var buildDomElement = {
+		js: function(eventLoadHandler){
+			var script_tag = document.createElement("script");
+			script_tag.setAttribute("type","text/javascript");
+			script_tag.setAttribute("charset","utf-8");
+			script_tag.setAttribute("src",res.url);
+			script_tag.onload = eventLoadHandler;
+			script_tag.onreadystatechange = function () { /* Same thing but for IE */
+				if (this.readyState == "complete" || this.readyState == "loaded") {
+					eventLoadHandler();
+			    }
+			};
+			return script_tag;
+		}
+	};
+	
 	/* Public function */
 	this.isLoaded = function(value){
 		if(typeof(value) !== "undefined"){
@@ -36,8 +52,15 @@ function Resource(resName,resType,resConf){
 		}
 		return false;
 	};
+	
 	this.attach = function(callback){
-		
+		if ( res.type == "js" ){
+			var s = buildDomElement[res.type](callback);
+			console.log('s: ',s);
+			(document.getElementsByTagName("head")[0] || document.documentElement).appendChild(s);
+		}
+		if ( this.type == "css" ){
+		}		
 	};
 	
 	this.url = function(){return res.url;};

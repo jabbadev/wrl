@@ -54,7 +54,8 @@
 		this.res2.isLoading(false);
 		equal(this.res2.ready(),true,"Resource res2 is ready");
 		
-		console.log(this.load.tag());
+		console.log('xxxxxxxxxxxx');
+		this.load.attach( function(){console.log('loaded .....'); });
 	});
 	
 	module('test [ Config ] object',{
