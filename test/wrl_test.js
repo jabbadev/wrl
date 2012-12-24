@@ -53,8 +53,8 @@
 		this.res2.isLoaded(true);
 		this.res2.isLoading(false);
 		equal(this.res2.ready(),true,"Resource res2 is ready");
-		pa = this.load.pointer();
-		ok(this.load.url() == pa().url(),"access to res by pointer");
+		var pa = this.load.pointer();
+		ok(this.load.url() === pa().url(),"access to res by pointer");
 		this.load.isLoaded(true);
 		equal(this.load.isLoaded(),true,"res is loaded");
 		equal(pa().isLoaded(),true,"res is loaded [ access by pointer ]");
@@ -125,7 +125,7 @@
 		res().isLoaded(true);
 		equal(res().isLoaded(),true,"res e is loaded");
 		equal(this.config.jsLoaded('e'),true,"res is not loaded");
-		ok(res().isLoaded() == this.config.jsLoaded('e'),"resource e config are the same");
+		ok(res().isLoaded() === this.config.jsLoaded('e'),"resource e config are the same");
 	});
 	
 	module('test jQuery.wrl',{
@@ -135,7 +135,7 @@
 	});
 	
 	test('test [ jQuery.wrl ]',function(){
-		ok(typeof($.wrl)=="object","wrl plugin is ready");
+		ok(typeof($.wrl)=== "object","wrl plugin is ready");
 		
 		var loader = $.wrl.addLoader('test',{
 			js:{'virtual': { require: ['a','c'] }, a: {url: "a.js", require: ['d'] }, b: {url: "b.js"}, c: {url: "c.js"},

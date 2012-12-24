@@ -1,3 +1,4 @@
+/*global Loader:true*/
 /*
  * wrl
  * 
@@ -27,11 +28,11 @@
 		},
 		loadCSS: function(ln,jsName){
 			this.loaders[ln].loadCSS(jsName);
-			return loaders[ln];
+			return this.loaders[ln];
 		},
 		loadHTML: function(ln,jsName){
 			this.loaders[ln].loadHTML(jsName);
-			return loaders[ln];
+			return this.loaders[ln];
 		}
 	}});
 }(jQuery));

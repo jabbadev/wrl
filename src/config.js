@@ -45,7 +45,7 @@ function Config() {
 		var status = {
 			ready: false,
 			tot: resources.length,
-			ready:[],
+			readyRef:[],
 			resurces:[],
 			nrr: 0,
 			loadPerc: function(){
@@ -56,15 +56,15 @@ function Config() {
 			var res = resources[i];
 			if(res().ready()){
 				status.nrr++;
-				status.ready.push(res().name());
+				status.readyRef.push(res().name());
 			}
 			else {
 				status.resurces.push(res().name());
 			}
 		}
-		status.ready = ( status.tot == status.nrr ); 
+		status.ready = ( status.tot === status.nrr ); 
 		return status;
-	};
+	}
 	
 	function _resLoaded(resType,resName,value){
 		return conf[resType][resName].isLoaded(value);

@@ -1,4 +1,4 @@
-/*global Resource:true*/
+/*global Resource:true Config:true*/
 
 function Loader(ln,config){
 	var lm = {
@@ -29,16 +29,16 @@ function Loader(ln,config){
 				
 			},
 			loadCSS:function(id,resName){
-				console.log('loadCSS: ',resName);
+				//console.log('loadCSS: ',resName);
 			},
 			loadHTML:function(id,resName){
-				console.log('loadHTML: ',resName);
+				//console.log('loadHTML: ',resName);
 			},
 			trigger: function(evetType,extraParams){
-				console.log('fire trigger ...',evetType,extraParams);
+				//console.log('fire trigger ...',evetType,extraParams);
 			},
 			bind: function(){
-				console.log('fire bind ...');
+				//console.log('fire bind ...');
 			}
 	};
 	

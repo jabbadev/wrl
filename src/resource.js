@@ -25,9 +25,9 @@ function Resource(resName,resType,resConf){
 			script_tag.setAttribute("src",res.url);
 			script_tag.onload = eventLoadHandler;
 			script_tag.onreadystatechange = function () { /* Same thing but for IE */
-				if (this.readyState == "complete" || this.readyState == "loaded") {
+				if (this.readyState === "complete" || this.readyState === "loaded") {
 					eventLoadHandler();
-			    }
+				}
 			};
 			return script_tag;
 		}
@@ -63,11 +63,11 @@ function Resource(resName,resType,resConf){
 	};
 	
 	this.attach = function(callback){
-		if ( res.type == "js" ){
+		if ( res.type === "js" ){
 			var s = buildDomElement[res.type](callback);
 			(document.getElementsByTagName("head")[0] || document.documentElement).appendChild(s);
 		}
-		if ( this.type == "css" ){
+		if ( this.type === "css" ){
 		}		
 	};
 	
