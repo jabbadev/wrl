@@ -34,15 +34,24 @@ function Resource(resName,resType,resConf){
 	};
 	
 	/* Public function */
+	this.pointer = function(){
+		var self = this;
+		return function(){
+			return self;
+		};
+	};
+	
 	this.isLoaded = function(value){
 		if(typeof(value) !== "undefined"){
-			res.loaded = value;	
+			res.loaded = value;
+			return res.loaded;
 		}
 		return res.loaded;
 	};
 	this.isLoading = function(value){
 		if(typeof(value) !== "undefined"){
-			res.loading = value;	
+			res.loading = value;
+			return res.loaded;
 		}
 		return res.loading;
 	};
@@ -56,7 +65,6 @@ function Resource(resName,resType,resConf){
 	this.attach = function(callback){
 		if ( res.type == "js" ){
 			var s = buildDomElement[res.type](callback);
-			console.log('s: ',s);
 			(document.getElementsByTagName("head")[0] || document.documentElement).appendChild(s);
 		}
 		if ( this.type == "css" ){

@@ -53,9 +53,13 @@
 		this.res2.isLoaded(true);
 		this.res2.isLoading(false);
 		equal(this.res2.ready(),true,"Resource res2 is ready");
+		pa = this.load.pointer();
+		ok(this.load.url() == pa().url(),"access to res by pointer");
+		this.load.isLoaded(true);
+		equal(this.load.isLoaded(),true,"res is loaded");
+		equal(pa().isLoaded(),true,"res is loaded [ access by pointer ]");
 		
-		console.log('xxxxxxxxxxxx');
-		this.load.attach( function(){console.log('loaded .....'); });
+		//this.load.attach(function(){console.log('loaded .....'); });
 	});
 	
 	module('test [ Config ] object',{
@@ -78,19 +82,19 @@
 		var reslist = this.config.getJsReq('virtual');
 		var jslist = [];
 		for( var i in reslist ){
-			jslist.push(reslist[i].url());
+			jslist.push(reslist[i]().url());
 		}
 		deepEqual(jslist,["e.js", "f.js", "d.js", "a.js", "c.js"],"required resources to load");
 		
 		reslist = this.config.getJsDep('d');
 		jslist = [];
 		for( i in reslist ){
-			jslist.push(reslist[i].url());
+			jslist.push(reslist[i]().url());
 		}
 		deepEqual(jslist,["p.js", "q.js", "z.js", "d.js"],"dependency resources to load");
 		reslist = this.config.getJsReq('virtual'); jslist = [];
 		for ( i in reslist ){
-			jslist.push(reslist[i].name());
+			jslist.push(reslist[i]().name());
 		}
 		deepEqual(jslist,["e", "f", "d", "a", "c"],"dependency name resources to load");
 		
@@ -115,6 +119,13 @@
 		stat = this.config.jsReady('d');
 		equal(stat.loadPerc(),100.00,"100% loaded of d res");
 		equal(stat.ready,true,"res d is ready");
+		
+		var res = this.config.getJsReq('e')[0];
+		equal(res().isLoaded(),true,"res e is not loaded");
+		res().isLoaded(true);
+		equal(res().isLoaded(),true,"res e is loaded");
+		equal(this.config.jsLoaded('e'),true,"res is not loaded");
+		ok(res().isLoaded() == this.config.jsLoaded('e'),"resource e config are the same");
 	});
 	
 	module('test jQuery.wrl',{

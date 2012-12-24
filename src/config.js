@@ -26,10 +26,10 @@ function Config() {
 			for(var rn in resList){
 				_buildChain(resType,resList[rn],chainType,resChain);
 			}
-			_dummy = res.isVirtual()||resChain.push(res);
+			_dummy = res.isVirtual()||resChain.push(res.pointer());
 		}
 		else {
-			_dummy = res.isVirtual()||resChain.push(res);
+			_dummy = res.isVirtual()||resChain.push(res.pointer());
 		}
 	}
 	
@@ -54,12 +54,12 @@ function Config() {
 		};
 		for(var i in resources){
 			var res = resources[i];
-			if(res.ready()){
+			if(res().ready()){
 				status.nrr++;
-				status.ready.push(res.name());
+				status.ready.push(res().name());
 			}
 			else {
-				status.resurces.push(res.name());
+				status.resurces.push(res().name());
 			}
 		}
 		status.ready = ( status.tot == status.nrr ); 
@@ -67,16 +67,16 @@ function Config() {
 	};
 	
 	function _resLoaded(resType,resName,value){
-		conf[resType][resName].isLoaded(value);
+		return conf[resType][resName].isLoaded(value);
 	}
 	function _resLoading(resType,resName,value){
-		conf[resType][resName].isLoading(value);
+		return conf[resType][resName].isLoading(value);
 	}
 	
 	/* Public methods */
 	
-	this.jsLoaded = function(resName,value){_resLoaded('js',resName,value);};
-	this.jsLoading = function(resName,value){_resLoading('js',resName,value);};
+	this.jsLoaded = function(resName,value){ return _resLoaded('js',resName,value);};
+	this.jsLoading = function(resName,value){return _resLoading('js',resName,value);};
 	
 	this.getJsReq = function(resName){ return _getRes('js',resName,'require'); };
 	this.getJsDep = function(resName){ return _getRes('js',resName,'depon'); };

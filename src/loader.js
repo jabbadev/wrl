@@ -16,16 +16,6 @@ function Loader(ln,config){
 					dep.pop();
 				}
 				
-				console.log('require ....');
-				for( var i in require ){
-					console.log(require[i].tag());
-				}
-				
-				console.log('dep ....');
-				for( var i in dep ){
-					console.log(dep[i].tag());
-				}
-				
 				var stat = this.config.jsReady(resName);
 				
 				
