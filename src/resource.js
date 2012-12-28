@@ -64,7 +64,7 @@ function Resource(resName,resType,resConf){
 	
 	this.load = function(callback){
 		res.loading = true;
-		this.loadPlugin(this.resLoadHandler,this,callback);
+		this.pluggedLoad(this.resLoadHandler,res,callback);
 		
 		/*
 		if ( res.type === "js" ){
@@ -73,7 +73,6 @@ function Resource(resName,resType,resConf){
 		}
 		if ( this.type === "css" ){
 		}*/
-		
 		
 	};
 	
@@ -107,6 +106,6 @@ function Resource(resName,resType,resConf){
 	res.media = resConf.media || null;
 }
 
-Resource.prototype.loadPlugin = function(handler,res,callback){
+Resource.prototype.pluggedLoad = function(handler,res,callback){
 	handler(res,callback);
 }

@@ -67,6 +67,10 @@
 	module('test [ Config ] object',{
 		setup: function(){
 			this.config = new Config();
+			this.config.plugLoad(function(handler,res,callback){
+				console.log('load res',res.url);
+				handler(res,callback);	
+			});
 		}
 	});
 	
@@ -128,6 +132,9 @@
 		equal(res().isLoaded(),true,"res e is loaded");
 		equal(this.config.jsLoaded('e'),true,"res is not loaded");
 		ok(res().isLoaded() === this.config.jsLoaded('e'),"resource e config are the same");
+		
+		res = this.config.getJsReq('q')[0];
+		res().load(function(){ console.log('loaded q ... '); });
 	});
 	
 	module('test jQuery.wrl',{

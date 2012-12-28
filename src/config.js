@@ -99,4 +99,8 @@ function Config() {
 			}
 		}
 	};
+	
+	this.plugLoad = function(fnLoad){
+		Resource.prototype.pluggedLoad = fnLoad;
+	}
 }
