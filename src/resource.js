@@ -62,14 +62,26 @@ function Resource(resName,resType,resConf){
 		return false;
 	};
 	
-	this.attach = function(callback){
+	this.load = function(callback){
+		res.loading = true;
+		this.loadPlugin(this.resLoadHandler,this,callback);
+		
+		/*
 		if ( res.type === "js" ){
 			var s = buildDomElement[res.type](callback);
 			(document.getElementsByTagName("head")[0] || document.documentElement).appendChild(s);
 		}
 		if ( this.type === "css" ){
-		}		
+		}*/
+		
+		
 	};
+	
+	this.resLoadHandler = function(res,callback){
+		res.loading = false;
+		res.loaded = true;
+		callback();
+	}
 	
 	this.url = function(){return res.url;};
 	this.depon = function(){return res.depon;};
@@ -93,4 +105,8 @@ function Resource(resName,resType,resConf){
 	res.loaded = false;
 	res.loading = false;
 	res.media = resConf.media || null;
+}
+
+Resource.prototype.loadPlugin = function(handler,res,callback){
+	handler(res,callback);
 }

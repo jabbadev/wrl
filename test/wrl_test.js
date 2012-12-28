@@ -59,7 +59,9 @@
 		equal(this.load.isLoaded(),true,"res is loaded");
 		equal(pa().isLoaded(),true,"res is loaded [ access by pointer ]");
 		
-		//this.load.attach(function(){console.log('loaded .....'); });
+		this.load.load(function(){ console.log('loaded ... '); });
+		equal(this.load.isLoaded(),true,"Resource a is loaded after call load function");
+		
 	});
 	
 	module('test [ Config ] object',{
