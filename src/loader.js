@@ -1,4 +1,4 @@
-/*global Resource:true Config:true*/
+/*global Resource:true Config:true console:true*/
 
 function Loader(ln,config){
 	var lm = {
@@ -46,3 +46,9 @@ function Loader(ln,config){
 	
 	return lm;
 }
+
+Loader.prototype.fnLoad = function(handler,res,callback){
+	
+	console.info('implement Loader.prototype.fnLoader = function(handler,res,callback){ /*1) load js|css|html res */; /*2) call handler(res,callback) */ }');
+	
+};

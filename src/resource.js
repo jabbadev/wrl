@@ -80,7 +80,7 @@ function Resource(resName,resType,resConf){
 		res.loading = false;
 		res.loaded = true;
 		callback();
-	}
+	};
 	
 	this.url = function(){return res.url;};
 	this.depon = function(){return res.depon;};
@@ -108,4 +108,4 @@ function Resource(resName,resType,resConf){
 
 Resource.prototype.pluggedLoad = function(handler,res,callback){
 	handler(res,callback);
-}
+};

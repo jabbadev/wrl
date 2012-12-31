@@ -33,6 +33,12 @@
 		loadHTML: function(ln,jsName){
 			this.loaders[ln].loadHTML(jsName);
 			return this.loaders[ln];
+		},
+		fnLoad: function(handler,res,callback){
+		
 		}
-	}});
+	}
+	
+	Loader.prototype.fnLoader = $.wrl.fnLoader;	
+	});
 }(jQuery));
