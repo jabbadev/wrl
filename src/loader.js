@@ -18,6 +18,9 @@ function Loader(ln,config){
 				
 				var stat = this.config.jsReady(resName);
 				
+				for( var i in require ){
+					require[i]().load(function(){ console.log('loaded ..... ');});
+				}
 				
 				/*
 				var $this = this;
@@ -42,13 +45,17 @@ function Loader(ln,config){
 			}
 	};
 	
+	lm.fnLoad = Loader.prototype.fnLoad;
+	lm.config.plugLoad(lm.fnLoad);
 	lm.config.load(config);
 	
 	return lm;
 }
 
 Loader.prototype.fnLoad = function(handler,res,callback){
-	
+	/*
+	1) load js|css|html res
+	2) call handler(res,callback)
+	*/
 	console.info('implement Loader.prototype.fnLoader = function(handler,res,callback){ /*1) load js|css|html res */; /*2) call handler(res,callback) */ }');
-	
 };

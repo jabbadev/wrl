@@ -25,6 +25,7 @@
 	//var config = new window.Config();
 	module('test [ Resource ] object',{
 		setup: function(){
+			this.resLoaded = false;
 			this.res1 = new Resource("a","js",{ id: "aRes", url: "a.js", require: ["c","d" ]});
 			this.res2 = new Resource("b","js",{ defer: "true", url: "b.js", depon: [ "a" ]});
 			this.virt = new Resource("virt","js",{depon: ["a","b"]});
@@ -34,6 +35,8 @@
 	});
 	
 	test('test [ Resource ]',function(){
+		var $this = this;
+		
 		equal(this.res1.url(),"a.js","getter ok");
 		equal(this.res1.isLoaded(),false,"resource is not loaded");
 		this.res1.isLoaded(true);
@@ -43,9 +46,6 @@
 		ok(this.res2.depon() != null,"depon is set");
 		deepEqual(this.res1.require(),["c","d" ],"require is set");
 		equal(this.virt.isVirtual(),true,"Is virtual resource");
-		equal(this.res1.tag(),'<script type="text/script" src="a.js" id="aRes"></script>',"tag script with id");
-		equal(this.res2.tag(),'<script type="text/script" src="b.js" defer="defer"></script>',"tag script with defer");
-		equal(this.css.tag(),'<link type="text/css" rel="stylesheet" href="a.css" id="cssID" media="print"></link>',"tag css");
 		equal(this.res1.ready(),true,"Resource res1 is ready");
 		equal(this.res2.ready(),false,"Resource res2 is not ready");
 		this.res2.isLoading(true);
@@ -58,17 +58,19 @@
 		this.load.isLoaded(true);
 		equal(this.load.isLoaded(),true,"res is loaded");
 		equal(pa().isLoaded(),true,"res is loaded [ access by pointer ]");
-		
-		this.load.load(function(){ console.log('loaded ... '); });
+		ok(!this.resLoaded,'check res not loaded');
+		this.load.load(function(){$this.resLoaded = true; ok($this.resLoaded,'callback resource is loaded');});
 		equal(this.load.isLoaded(),true,"Resource a is loaded after call load function");
 		
 	});
 	
 	module('test [ Config ] object',{
 		setup: function(){
+			var $this = this;
 			this.config = new Config();
+			this.q = false;
 			this.config.plugLoad(function(handler,res,callback){
-				console.log('load res',res.url);
+				$this.q = true;
 				handler(res,callback);	
 			});
 		}
@@ -133,8 +135,10 @@
 		equal(this.config.jsLoaded('e'),true,"res is not loaded");
 		ok(res().isLoaded() === this.config.jsLoaded('e'),"resource e config are the same");
 		
+		ok(!this.q,'check pre load q res ...');
+		var $this = this;
 		res = this.config.getJsReq('q')[0];
-		res().load(function(){ console.log('loaded q ... '); });
+		res().load(function(){ ok($this.q,"res q loaded ...."); });
 	});
 	
 	module('test jQuery.wrl',{
@@ -148,7 +152,7 @@
 		
 		var loader = $.wrl.addLoader('test',{
 			js:{'virtual': { require: ['a','c'] }, a: {url: "a.js", require: ['d'] }, b: {url: "b.js"}, c: {url: "c.js"},
-				d: {url: "d.js", require: ['e','f'], depon: [ "z" ] }, e: {url: "e.js"}, f: {url: "f.js"},
+				d: {url: "../libs/test-res/d.js", require: ['e','f'], depon: [ "z" ] }, e: {url: "../libs/test-res/e.js"}, f: {url: "../libs/test-res/f.js"},
 				z: { url: "z.js", depon: ["p","q"] },p: {url: "p.js"},q: {url: "q.js"} },
 			css:{a: {url: "a.css" }, b: {url: "b.js" } },
 			html:{ a: {url: "a.htm"}}
