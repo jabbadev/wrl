@@ -152,7 +152,7 @@
 		
 		var loader = $.wrl.addLoader('test',{
 			js:{'virtual': { require: ['a','c'] }, a: {url: "a.js", require: ['d'] }, b: {url: "b.js"}, c: {url: "c.js"},
-				d: {url: "../libs/test-res/d.js", require: ['e','f'], depon: [ "z" ] }, e: {url: "../libs/test-res/e.js"}, f: {url: "../libs/test-res/f.js"},
+				d: {url: "../libs/test-res/d.js", require: ['e','f'], depon: [ "z" ] }, e: { url: "../libs/test-res/e.js" }, f: {url: "../libs/test-res/f.js"},
 				z: { url: "z.js", depon: ["p","q"] },p: {url: "p.js"},q: {url: "q.js"} },
 			css:{a: {url: "a.css" }, b: {url: "b.js" } },
 			html:{ a: {url: "a.htm"}}
@@ -160,7 +160,7 @@
 		ok(typeof(loader)==="object","jquery chain obj");
 		ok(typeof($.wrl.loaders.test)==="object","loader test is ready");
 		
-		loader.loadJS('d');
+		loader.loadJS('d',function(){console.log('finish .....');});
 		//loader.loadJS('e');
 	});
 	

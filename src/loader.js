@@ -1,14 +1,16 @@
 /*global Resource:true Config:true console:true*/
 
 function Loader(ln,config){
+	
 	var lm = {
 			name: ln,
 			config: new Config(),
 			attachJS: function(){},
 			attachCSS: function(){},
-			loadJS:function(resName){
+			loadJS:function(resName,callback){
 				var require = this.config.getJsReq(resName);
 				var dep = this.config.getJsDep(resName);
+				
 				if ( dep.length > 1 ){
 					require.pop();
 				}
@@ -16,19 +18,16 @@ function Loader(ln,config){
 					dep.pop();
 				}
 				
-				var stat = this.config.jsReady(resName);
-				
-				for( var i in require ){
-					require[i]().load(function(){ console.log('loaded ..... ');});
+				for(var i=0; i < require.length; i++ ){
+					if (i===(require.length-1)){
+						require[i]().load(callback);
+					}
+					else {
+						require[i]().load();
+					}
 				}
 				
-				/*
-				var $this = this;
-				setTimeout(function(){
-					$this.trigger('jsLoaded');
-				},3000);
-				return this;
-				*/
+				var stat = this.config.jsReady(resName);
 				
 			},
 			loadCSS:function(id,resName){

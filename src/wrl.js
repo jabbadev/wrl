@@ -7,6 +7,24 @@
  * Licensed under the MIT license.
  */
 (function($) {
+
+	function setUpHandler(st,handler,res,callback){
+		var done = false;
+		return function(){
+			if (!this.readyState){
+				handler(res,callback);
+				st.onload = null;
+			}
+			else{
+				if (!done && ( this.readyState === "complete" || this.readyState === "loaded" )) {		
+					handler(res,callback);
+					done = true;
+					st.onreadystatechange = null;
+				}
+			}
+		};
+	}
+	
 	var loadfn = {
 		js: function (handler,res,callback){
 			var st = document.createElement("script");
@@ -15,14 +33,7 @@
 			st.setAttribute("src",res.url);
 			var _dummy = ( res.id ) && st.setAttribute("id",res.id);
 			_dummy = ( res.defer ) && st.setAttribute("defer",res.defer);
-			st.onload = (function(res,callback){
-				handler(res,callback);
-			})(res,callback);
-			st.onreadystatechange = function () { /* Same thing but for IE */
-				if (this.readyState === "complete" || this.readyState === "loaded") {
-					handler(res,callback);
-				}
-			};
+			st.onreadystatechange = st.onload = setUpHandler(st,handler,res,callback);
 			
 			var ref = document.getElementsByTagName('head')[0];
 			var parent;
@@ -41,6 +52,12 @@
 				parent = ref.parentNode;
 				parent.insertBefore(st,ref);
 			}
+		},
+		css: function(handler,res,callback){
+			
+		},
+		html: function(handler,res,callback){
+			
 		}
 	};
 	
@@ -60,7 +77,7 @@
 				this.loaders[ln] = loader;
 				return loader;
 			},
-			loadJS: function(ln,jsName){
+			loadJS: function(ln,jsName,callback){
 				return this.loaders[ln].loadJS(jsName);
 				//return loaders[ln];
 			},
@@ -79,5 +96,3 @@
 	});
 	
 }(jQuery));
-
-//Loader.prototype.fnLoader = $.wrl.fnLoader;	
