@@ -151,7 +151,7 @@
 		ok(typeof($.wrl)=== "object","wrl plugin is ready");
 		
 		var loader = $.wrl.addLoader('test',{
-			js:{'req': { url: "../libs/test-res/req.js" ,require: ['e','f'] }, a: {url: "a.js", require: ['d'] }, b: {url: "b.js"}, c: {url: "c.js"},
+			js:{'dep': { url: "../libs/test-res/dep.js" ,depon: ['e','f'] }, 'req': { url: "../libs/test-res/req.js" ,require: ['e','f'] }, a: {url: "a.js", require: ['d'] }, b: {url: "b.js"}, c: {url: "c.js"},
 				d: {url: "../libs/test-res/d.js", require: ['e','f'], depon: [ "z" ] }, e: { url: "../libs/test-res/e.js" }, f: {url: "../libs/test-res/f.js"},
 				z: { url: "z.js", depon: ["p","q"] },p: {url: "p.js"},q: {url: "q.js"} },
 			css:{a: {url: "a.css" }, b: {url: "b.js" } },
@@ -160,8 +160,8 @@
 		ok(typeof(loader)==="object","jquery chain obj");
 		ok(typeof($.wrl.loaders.test)==="object","loader test is ready");
 		
-		loader.loadJS('req',function(){console.log('finish .....');});
-		//loader.loadJS('e');
+		//loader.loadJS('req',function(){console.log('req finish .....');});
+		loader.loadJS('dep',function(){console.log('dep finish .....');});
 	});
 	
 }(jQuery));

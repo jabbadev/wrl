@@ -36,20 +36,46 @@ function Loader(ln,config){
 					dep.pop();
 				}
 				
+				/*
 				var loadReq = (function(req){
 					return function(){
 						for(var i=0; i < req.length; i++ ){
-							//console.log('attach ... ',req[i]().name());
 							req[i]().load();
 						}
 					};
 				})(this.config.getJsReq(resName));
+				*/
 				
+				var loadDep = (function(dep){
+					
+					return function(){
+						fn = [];
+						for(var i=dep.length-1;i>=0; i-- ){
+							if(i==dep.length-1){
+								console.log('last');
+								fn.push((function(i){
+									return function(){dep[i]().load();
+									};
+								})(i));
+								console.log(fn);
+							}
+							else {
+								console.log('normal');
+								fn.push(function(){
+									dep[i].load(fn[i+1]);
+								});
+							}
+						}
+						
+					};	
+				})(this.config.getJsDep(resName));
 				
-				var lr = setTimeout(loadReq,1);
+				loadDep();
+				//var ld = setTimeout(loadDep,1);
 				
+				//var lr = setTimeout(loadReq,1);
 				
-				
+				/* wait until all ready */
 				var wait = setInterval(function(){
 					if($this.config.jsReady(resName).ready){
 						callback();
