@@ -37,7 +37,7 @@ function Resource(resName,resType,resConf){
 	this.resLoadHandler = function(res,callback){
 		res.loading = false;
 		res.loaded = true;
-		var _d = (typeof(callback)==="function") && callback();
+		var _d = (typeof(callback)==="function") && callback(res);
 	};
 	
 	this.url = function(){return res.url;};
