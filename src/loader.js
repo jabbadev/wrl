@@ -20,12 +20,6 @@ function Loader(ln,config){
 					};
 				})();
 							
-				var ff = (function (status,callback){
-					return function(){
-						status() && callback();
-					};
-				})(status,callback);
-				
 				var req = this.config.getJsReq(resName);
 				var dep = this.config.getJsDep(resName);
 				
@@ -36,48 +30,61 @@ function Loader(ln,config){
 					dep.pop();
 				}
 				
-				/*
 				var loadReq = (function(req){
-					return function(){
-						for(var i=0; i < req.length; i++ ){
-							req[i]().load();
-						}
-					};
-				})(this.config.getJsReq(resName));
-				*/
-				
-				var loadDep = (function(dep){
+					if (!req.length){status({reqdone: true});}
+					
+					var cd = (function(count){
+						return function(){
+							return count--;
+						};
+					})(req.length-1);
+					
+					function getFn(cd){
+						return function(res){
+							if(!cd()){status({reqdone: true});}
+						};
+					}
 					
 					return function(){
-						fn = [];
-						for(var i=dep.length-1;i>=0; i-- ){
-							if(i==dep.length-1){
-								console.log('last');
-								fn.push((function(i){
-									return function(){dep[i]().load();
-									};
-								})(i));
-								console.log(fn);
-							}
-							else {
-								console.log('normal');
-								fn.push(function(){
-									dep[i].load(fn[i+1]);
+						for(var i=0; i < req.length; i++ ){
+							req[i]().load(getFn(cd));
+						}
+					};
+				})(req);
+				
+				var loadDep = (function(dep){
+					if (!dep.length){status({depdone: true });}
+					
+					function getFn(i,dep,fn){
+						return function(){
+							if (i===dep.length-1){
+								dep[i]().load(function(){
+									status({depdone: true });
 								});
 							}
+							else{
+								dep[i]().load(fn[i+1]);
+							}
+						};
+					}
+					
+					return function(){
+						var fn = [];
+						for(var i=dep.length-1;i>=0; i-- ){
+							fn.unshift(getFn(i,dep,fn));
 						}
-						
-					};	
-				})(this.config.getJsDep(resName));
+						fn[0]();
+					};
+					
+				})(dep);
 				
-				loadDep();
-				//var ld = setTimeout(loadDep,1);
-				
-				//var lr = setTimeout(loadReq,1);
+				var lr = ( req.length ) && setTimeout(loadReq,1);
+				var ld = ( dep.length ) && setTimeout(loadDep,1);
 				
 				/* wait until all ready */
 				var wait = setInterval(function(){
-					if($this.config.jsReady(resName).ready){
+					//if($this.config.jsReady(resName).ready){
+					if(status()){
 						callback();
 						clearInterval(wait);
 					}

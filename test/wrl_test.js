@@ -160,8 +160,14 @@
 		ok(typeof(loader)==="object","jquery chain obj");
 		ok(typeof($.wrl.loaders.test)==="object","loader test is ready");
 		
-		//loader.loadJS('req',function(){console.log('req finish .....');});
-		loader.loadJS('dep',function(){console.log('dep finish .....');});
+		console.time('loadJS(require)');
+		loader.loadJS('req',function(){
+			console.timeEnd('loadJS(require)');
+		});
+		console.time('loadJS(depon)');
+		loader.loadJS('dep',function(){
+			console.timeEnd('loadJS(depon)');
+		});
 	});
 	
 }(jQuery));
