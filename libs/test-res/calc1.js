@@ -1,0 +1,1 @@
+CALC1 = getA() + getB();

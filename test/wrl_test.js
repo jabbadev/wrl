@@ -157,9 +157,11 @@
 			css:{a: {url: "a.css" }, b: {url: "b.js" } },
 			html:{ a: {url: "a.htm"}}
 		});
+		
 		ok(typeof(loader)==="object","jquery chain obj");
 		ok(typeof($.wrl.loaders.test)==="object","loader test is ready");
 		
+		/*
 		console.time('loadJS(require)');
 		loader.loadJS('req',function(){
 			console.timeEnd('loadJS(require)');
@@ -167,7 +169,31 @@
 		console.time('loadJS(depon)');
 		loader.loadJS('dep',function(){
 			console.timeEnd('loadJS(depon)');
+		});*/
+		
+		/*
+		calculator.loadJS('calc1',function(){
+			console.log('calc1 result: ',CALC1);
+			ok(CALC1==500100000,'all dep on');
+		});*/
+	});
+	
+	asyncTest( "Test loading scripts",1, function() {
+		
+		var calculator = $.wrl.addLoader('calc',{
+			js: {
+				a: { url: "../libs/test-res/a.js" },
+				b: { url: "../libs/test-res/b.js" , depon: ['c'] },
+				c: { url: "../libs/test-res/c.js" },
+				calc1: { url: "../libs/test-res/calc1.js", depon: ['a','b'] },  
+			}
 		});
+		
+		calculator.loadJS('calc1',function(){
+			ok(CALC1==500100000,'all dep on');
+			start();
+		});
+		 
 	});
 	
 }(jQuery));
