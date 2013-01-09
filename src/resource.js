@@ -41,7 +41,6 @@ function Resource(resName,resType,resConf){
 	};
 	
 	this.url = function(){return res.url;};
-	this.depon = function(){return res.depon;};
 	this.require = function(){return res.require;};
 	this.name = function(){return res.name;};
 	this.isVirtual = function(){return res.virtual;};
@@ -52,7 +51,6 @@ function Resource(resName,resType,resConf){
 	res.name = resName;
 	res.type = resType;
 	res.id = resConf.id || null;
-	res.depon = resConf.depon || null;
 	res.require =resConf.require || null;
 	res.url = resConf.url;
 	res.defer = resConf.defer || false;

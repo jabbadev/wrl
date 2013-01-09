@@ -27,10 +27,12 @@
 		setup: function(){
 			this.resLoaded = false;
 			this.res1 = new Resource("a","js",{ id: "aRes", url: "a.js", require: ["c","d" ]});
-			this.res2 = new Resource("b","js",{ defer: "true", url: "b.js", depon: [ "a" ]});
-			this.virt = new Resource("virt","js",{depon: ["a","b"]});
+			this.res2 = new Resource("b","js",{ defer: "true", url: "b.js", require: [ "a" ]});
+			this.virt = new Resource("virt","js",{require: ["a","b"]});
 			this.css = new Resource("a","css",{ id: "cssID", url: "a.css", media: "print" });
 			this.load = new Resource("a","js",{ url: "../libs/test-res/a.js" });
+			this.res3 = new Resource("a","js",{ url: "a.js", require: [ "b","z","c:wait","b:wait","x","y" ]});
+			
 		}
 	});
 	
@@ -42,8 +44,6 @@
 		this.res1.isLoaded(true);
 		notEqual(this.res1.isLoaded(),false,"resource is loaded");
 		equal(this.res1.isLoaded(),true,"resource is loaded method");
-		ok(this.res1.depon() == null,"depon not set");
-		ok(this.res2.depon() != null,"depon is set");
 		deepEqual(this.res1.require(),["c","d" ],"require is set");
 		equal(this.virt.isVirtual(),true,"Is virtual resource");
 		equal(this.res1.ready(),true,"Resource res1 is ready");
@@ -60,8 +60,7 @@
 		equal(pa().isLoaded(),true,"res is loaded [ access by pointer ]");
 		ok(!this.resLoaded,'check res not loaded');
 		this.load.load(function(){$this.resLoaded = true; ok($this.resLoaded,'callback resource is loaded');});
-		equal(this.load.isLoaded(),true,"Resource a is loaded after call load function");
-		
+		equal(this.load.isLoaded(),true,"Resource a is loaded after call load function");		
 	});
 	
 	module('test [ Config ] object',{
@@ -80,11 +79,23 @@
 		ok(typeof(this.config)==="object","oggetto corretamente istanziato");		
 		
 		this.config.load({
-			js:{'virtual': { require: ['a','c'] }, a: {url: "a.js", require: ['d'] }, b: {url: "b.js"}, c: {url: "c.js"},
-				d: {url: "d.js", require: ['e','f'], depon: [ "z" ] }, e: {url: "e.js"}, f: {url: "f.js"},
-				z: { url: "z.js", depon: ["p","q"] },p: {url: "p.js"},q: {url: "q.js"} },
-			css:{a: {url: "a.css" }, b: {url: "b.js" } },
-			html:{ a: {url: "a.htm"}}
+			js:{
+				virtual: {require: ['a','c']},
+				a: {url: "a.js",require: ['d']},
+				b: {url: "b.js"},
+				c: {url: "c.js"},
+				d: {url: "d.js",require: ['e','f']},
+				e: {url: "e.js"},
+				f: {url: "f.js"},
+				z: { url: "z.js",require: ["p","q"]},
+				p: {url: "p.js"},
+				q: {url: "q.js"}
+			},
+			css:{
+				a: {url: "a.css" },
+				b: {url: "b.js"}
+			},
+			html:{a: {url: "a.htm"}}
 		});
 		
 		var reslist = this.config.getJsReq('virtual');
@@ -94,12 +105,6 @@
 		}
 		deepEqual(jslist,["e.js", "f.js", "d.js", "a.js", "c.js"],"required resources to load");
 		
-		reslist = this.config.getJsDep('d');
-		jslist = [];
-		for( i in reslist ){
-			jslist.push(reslist[i]().url());
-		}
-		deepEqual(jslist,["p.js", "q.js", "z.js", "d.js"],"dependency resources to load");
 		reslist = this.config.getJsReq('virtual'); jslist = [];
 		for ( i in reslist ){
 			jslist.push(reslist[i]().name());
@@ -118,7 +123,7 @@
 		stat = this.config.jsReady('d');
 		this.config.jsLoaded('z',true);
 		stat = this.config.jsReady('d');
-		equal(stat.loadPerc(),50.00,"50% loaded of d res");
+		equal(stat.loadPerc(),66.67,"50% loaded of d res");
 		equal(stat.ready,false,"res d not ready");
 		this.config.jsLoaded('p',true);
 		this.config.jsLoaded('q',true);
@@ -139,6 +144,7 @@
 		var $this = this;
 		res = this.config.getJsReq('q')[0];
 		res().load(function(){ ok($this.q,"res q loaded ...."); });
+
 	});
 	
 	module('test jQuery.wrl',{

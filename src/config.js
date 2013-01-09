@@ -18,13 +18,13 @@ function Config() {
 		}
 	}
 	
-	function _buildChain(resType,resName,chainType,resChain){
+	function _buildChain(resType,resName,resChain){
 		var res = _getres(resType,resName);
-		var resList = res[chainType]();
+		var resList = res['require']();
 		var _dummy;
 		if (resList){
 			for(var rn in resList){
-				_buildChain(resType,resList[rn],chainType,resChain);
+				_buildChain(resType,resList[rn],resChain);
 			}
 			_dummy = res.isVirtual()||resChain.push(res.pointer());
 		}
@@ -33,15 +33,15 @@ function Config() {
 		}
 	}
 	
-	function _getRes(resType,resName,chainType){
+	function _getRes(resType,resName){
 		var resChain = [];
-		_buildChain(resType,resName,chainType,resChain);
+		_buildChain(resType,resName,resChain);
 		return resChain;
 	}
 	
 	function _resReady(resType,resName){
-		var resources = _getRes(resType,resName,'depon').concat(_getRes(resType,resName,'require'));
-		resources.pop();
+		var resources = _getRes(resType,resName);
+		
 		var status = {
 			ready: false,
 			tot: resources.length,
@@ -78,10 +78,8 @@ function Config() {
 	this.jsLoaded = function(resName,value){ return _resLoaded('js',resName,value);};
 	this.jsLoading = function(resName,value){return _resLoading('js',resName,value);};
 	
-	this.getJsReq = function(resName){ return _getRes('js',resName,'require'); };
-	this.getJsDep = function(resName){ return _getRes('js',resName,'depon'); };
-	this.getCssReq = function(resName){ return _getRes('css',resName,'require'); };
-	this.getCssDep = function(resName){ return _getRes('css',resName,'depon'); };
+	this.getJsReq = function(resName){return _getRes('js',resName);};
+	this.getCssReq = function(resName){return _getRes('css',resName);};
 		
 	this.jsReady = function(resName){
 		return _resReady('js',resName);
