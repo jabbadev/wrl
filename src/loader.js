@@ -54,19 +54,15 @@ function Loader(ln,config){
 				
 				var loadDep = (function(dep){
 					if (!dep.length){status({depdone: true });}
-					
-					console.log('status xxxxxx: ',status());
-					
+						
 					function getFn(i,dep,fn){
 						return function(){
 							if (i===dep.length-1){
-								console.log('load last: ',dep[i]().name());
 								dep[i]().load(function(){
 									status({depdone: true });
 								});
 							}
 							else{
-								console.log('load: ',dep[i]().name());
 								dep[i]().load(fn[i+1]);
 							}
 						};
