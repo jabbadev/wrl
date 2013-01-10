@@ -18,24 +18,31 @@ function Config() {
 		}
 	}
 	
-	function _buildChain(resType,resName,resChain){
-		var res = _getres(resType,resName);
-		var resList = res['require']();
+	function _buildChain(resType,resInfo,resChain){
+		var res = _getres(resType,resInfo.name);
+		
+		var _resList = res['require']();
+		var resList = [];
+		for(var i in _resList){
+			var _re = /^([\w|\W]+):([\w|\W]+)$/.exec(_resList[i]);
+			(_re)?resList.push({name:_re[1],meth:_re[2]}):resList.push({name:_resList[i],meth:null});
+		}
+		
 		var _dummy;
 		if (resList){
 			for(var rn in resList){
 				_buildChain(resType,resList[rn],resChain);
 			}
-			_dummy = res.isVirtual()||resChain.push(res.pointer());
+			_dummy = res.isVirtual()||resChain.push({meth: resInfo.meth,res: res.pointer()});
 		}
 		else {
-			_dummy = res.isVirtual()||resChain.push(res.pointer());
+			_dummy = res.isVirtual()||resChain.push({meth: resInfo.meth,res: res.pointer()});
 		}
 	}
 	
 	function _getRes(resType,resName){
 		var resChain = [];
-		_buildChain(resType,resName,resChain);
+		_buildChain(resType,{name: resName,meth: null},resChain);
 		return resChain;
 	}
 	
@@ -54,12 +61,12 @@ function Config() {
 		};
 		for(var i in resources){
 			var res = resources[i];
-			if(res().ready()){
+			if(res.res().ready()){
 				status.nrr++;
-				status.readyRef.push(res().name());
+				status.readyRef.push(res.res().name());
 			}
 			else {
-				status.resurces.push(res().name());
+				status.resurces.push(res.res().name());
 			}
 		}
 		status.ready = ( status.tot === status.nrr ); 

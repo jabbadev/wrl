@@ -8,30 +8,20 @@ function Loader(ln,config){
 			attachJS: function(){},
 			attachCSS: function(){},
 			loadJS:function(resName,callback){
-				var $this = this;
-				var status = (function(){
-					var _status = { reqdone: false, depdone: false };
-					return function(status){
-						if ( status ){
-							_status.reqdone = (status.reqdone) && status.reqdone || _status.reqdone;
-							_status.depdone = (status.depdone) && status.depdone || _status.depdone;
+			
+				var done = (function(){
+					var _done = false;
+					return function(done){
+						if ( typeof(done)!== "undefined" ){
+							_done = done;
 						}
-						return _status.reqdone && _status.depdone;
+						return _done;
 					};
 				})();
 							
 				var req = this.config.getJsReq(resName);
-				var dep = this.config.getJsDep(resName);
-				
-				if ( dep.length > 1 ){
-					req.pop();
-				}
-				else{
-					dep.pop();
-				}
 				
 				var loadReq = (function(req){
-					if (!req.length){status({reqdone: true});}
 					
 					var cd = (function(count){
 						return function(){
@@ -39,54 +29,53 @@ function Loader(ln,config){
 						};
 					})(req.length-1);
 					
-					function getFn(cd){
-						return function(res){
-							if(!cd()){status({reqdone: true});}
-						};
-					}
-					
-					return function(){
-						for(var i=0; i < req.length; i++ ){
-							req[i]().load(getFn(cd));
-						}
-					};
-				})(req);
-				
-				var loadDep = (function(dep){
-					if (!dep.length){status({depdone: true });}
-						
-					function getFn(i,dep,fn){
-						return function(){
-							if (i===dep.length-1){
-								dep[i]().load(function(){
-									status({depdone: true });
+					function getFn(i,req,fn,cd){
+						if (i===req.length-1){
+							return function(){
+								//console.info(req[i].res().name()," last attach");
+								req[i].res().load(function(){
+									//console.info(req[i].res().name()," end loaded");
+									if(!cd())done(true);
 								});
-							}
-							else{
-								dep[i]().load(fn[i+1]);
-							}
-						};
+							};
+						}
+						else if( req[i].meth === "wait" ){
+							return function(){
+									//console.info(req[i].res().name()," wait attach");
+									req[i].res().load(function(){
+										//console.info(req[i].res().name()," wait loaded");
+										if(!cd())done(true);
+										fn[i+1]();
+									});
+							};
+						}
+						else {
+							return function(){
+									//console.info(req[i].res().name()," attach");
+									req[i].res().load(function(){
+										//console.info(req[i].res().name()," loaded");
+										if(!cd())done(true);
+									});
+									fn[i+1]();
+							};
+						}
 					}
 					
 					return function(){
 						var fn = [];
-						for(var i=dep.length-1;i>=0; i-- ){
-							fn.unshift(getFn(i,dep,fn));
+						for(var i=req.length-1;i>=0;i-- ){
+							fn.unshift(getFn(i,req,fn,cd));
 						}
 						fn[0]();
 					};
 					
-				})(dep);
-				
-				
+				})(req);
 				
 				var lr = ( req.length ) && setTimeout(loadReq,1);
-				var ld = ( dep.length ) && setTimeout(loadDep,1);
 				
 				/* wait until all ready */
 				var wait = setInterval(function(){
-					if($this.config.jsReady(resName).ready){
-					//if(status()){
+					if(done()){
 						callback();
 						clearInterval(wait);
 					}

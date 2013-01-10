@@ -22,7 +22,7 @@
       notStrictEqual(actual, expected, [message])
       raises(block, [expected], [message])
   */
-	//var config = new window.Config();
+	
 	module('test [ Resource ] object',{
 		setup: function(){
 			this.resLoaded = false;
@@ -101,13 +101,13 @@
 		var reslist = this.config.getJsReq('virtual');
 		var jslist = [];
 		for( var i in reslist ){
-			jslist.push(reslist[i]().url());
+			jslist.push(reslist[i].res().url());
 		}
 		deepEqual(jslist,["e.js", "f.js", "d.js", "a.js", "c.js"],"required resources to load");
 		
 		reslist = this.config.getJsReq('virtual'); jslist = [];
 		for ( i in reslist ){
-			jslist.push(reslist[i]().name());
+			jslist.push(reslist[i].res().name());
 		}
 		deepEqual(jslist,["e", "f", "d", "a", "c"],"dependency name resources to load");
 		
@@ -134,16 +134,16 @@
 		equal(stat.ready,true,"res d is ready");
 		
 		var res = this.config.getJsReq('e')[0];
-		equal(res().isLoaded(),true,"res e is not loaded");
-		res().isLoaded(true);
-		equal(res().isLoaded(),true,"res e is loaded");
+		equal(res.res().isLoaded(),true,"res e is not loaded");
+		res.res().isLoaded(true);
+		equal(res.res().isLoaded(),true,"res e is loaded");
 		equal(this.config.jsLoaded('e'),true,"res is not loaded");
-		ok(res().isLoaded() === this.config.jsLoaded('e'),"resource e config are the same");
+		ok(res.res().isLoaded() === this.config.jsLoaded('e'),"resource e config are the same");
 		
 		ok(!this.q,'check pre load q res ...');
 		var $this = this;
 		res = this.config.getJsReq('q')[0];
-		res().load(function(){ ok($this.q,"res q loaded ...."); });
+		res.res().load(function(){ ok($this.q,"res q loaded ...."); });
 
 	});
 	
@@ -166,26 +166,37 @@
 		
 		ok(typeof(loader)==="object","jquery chain obj");
 		ok(typeof($.wrl.loaders.test)==="object","loader test is ready");
-		
+			
 	});
 	
 	asyncTest( "Async test loading scripts",1, function() {	
 		var calculator = $.wrl.addLoader('calc',{
 			js: {
 				a: { url: "../libs/test-res/a.js" },
-				b: { url: "../libs/test-res/b.js" , depon: ['c'] },
+				b: { url: "../libs/test-res/b.js" , require: ['c:wait'] },
 				c: { url: "../libs/test-res/c.js" },
-				calc1 : { url: "../libs/test-res/calc1.js", depon: ['a','b'] }  
+				e: { url: "../libs/test-res/e.js"},
+				f: { url: "../libs/test-res/f.js"},
+				calc1 : { url: "../libs/test-res/calc1.js", require: ['a','b'] }  
 			}
 		});
 		
-		calculator.loadJS('calc1',function(){});
-		setTimeout(function(){
-			ok(typeof CALC1!=='undefined' && CALC1===500100000,'all dep on');
-			start();
-		},1000);
 		
-		 
+		function calc1(callback){
+			calculator.loadJS('calc1',callback);
+		};
+		
+		
+		BASE_TS = new Date().getTime();
+		calc1(function(){
+			//console.log('C_TS: ',C_TS,' B_TS',B_TS);
+			equal(CALC1,100000,"javascript calc1 is loaded");
+		});
+		
+		setTimeout(function(){
+			start();
+		},5000);
+		
 	});
 	
 }(jQuery));
