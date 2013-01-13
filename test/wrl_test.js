@@ -170,6 +170,7 @@
 	});
 	
 	asyncTest( "Async test loading scripts",1, function() {	
+			
 		var calculator = $.wrl.addLoader('calc',{
 			js: {
 				a: { url: "../libs/test-res/a.js" },

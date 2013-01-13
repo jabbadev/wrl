@@ -9,14 +9,14 @@ function Resource(resName,resType,resConf){
 	};
 	
 	this.isLoaded = function(value){
-		if(typeof(value) !== "undefined"){
+		if(typeof value !== "undefined"){
 			res.loaded = value;
 			return res.loaded;
 		}
 		return res.loaded;
 	};
 	this.isLoading = function(value){
-		if(typeof(value) !== "undefined"){
+		if(typeof value !== "undefined"){
 			res.loading = value;
 			return res.loaded;
 		}
@@ -37,7 +37,7 @@ function Resource(resName,resType,resConf){
 	this.resLoadHandler = function(res,callback){
 		res.loading = false;
 		res.loaded = true;
-		var _d = (typeof(callback)==="function") && callback(res);
+		var _d = (typeof callback === "function") && callback(res);
 	};
 	
 	this.url = function(){return res.url;};

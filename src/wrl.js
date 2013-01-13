@@ -66,6 +66,8 @@
 			loaders: {},
 			addLoader: function(ln,config){
 				Loader.prototype.fnLoad = this.fnLoad;
+				Loader.prototype.fnLoadJS = this.fnLoadJS;				
+				
 				var loader = $(new Loader(ln,config));
 				loader[0].trigger = $.proxy(loader.trigger,loader);
 				loader[0].bind = $.proxy(loader.bind,loader);

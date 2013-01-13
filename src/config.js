@@ -108,4 +108,8 @@ function Config() {
 	this.plugLoad = function(fnLoad){
 		Resource.prototype.pluggedLoad = fnLoad;
 	};
+	
+	this.plugLoadJS = function(fnLoadJS){
+		Resource.prototype.pluggedLoadJS = fnLoadJS;
+	};
 }
