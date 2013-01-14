@@ -31,7 +31,8 @@ function Resource(resName,resType,resConf){
 	
 	this.load = function(callback){
 		res.loading = true;
-		this.pluggedLoad(this.resLoadHandler,res,callback);
+		//this.pluggedLoad(this.resLoadHandler,res,callback);
+		this.pluggedLoadJS(this.resLoadHandler,res,callback);
 	};
 	
 	this.resLoadHandler = function(res,callback){
@@ -60,5 +61,17 @@ function Resource(resName,resType,resConf){
 }
 
 Resource.prototype.pluggedLoad = function(handler,res,callback){
+	handler(res,callback);
+};
+
+Resource.prototype.pluggedLoadJS = function(handler,res,callback){
+	handler(res,callback);
+};
+
+Resource.prototype.pluggedLoadCSS = function(handler,res,callback){
+	handler(res,callback);
+};
+
+Resource.prototype.pluggedLoadGET = function(handler,res,callback){
 	handler(res,callback);
 };

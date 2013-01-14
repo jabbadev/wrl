@@ -68,7 +68,7 @@
 			var $this = this;
 			this.config = new Config();
 			this.q = false;
-			this.config.plugLoad(function(handler,res,callback){
+			this.config.plugLoadJS(function(handler,res,callback){
 				$this.q = true;
 				handler(res,callback);	
 			});

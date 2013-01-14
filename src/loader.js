@@ -1,7 +1,60 @@
 /*global Resource:true Config:true console:true*/
 
-function Loader(ln,config){
+function Loader(ln,config){	
+	/* Private functions */	
+	function setUpHandler(st,handler,res,callback){
+		var done = false;
+		return function(){
+			if (!this.readyState){
+				handler(res,callback);
+				st.onload = null;
+			}
+			else{
+				if (!done && ( this.readyState === "complete" || this.readyState === "loaded" )) {		
+					handler(res,callback);
+					done = true;
+					st.onreadystatechange = null;
+				}
+			}
+		};
+	}	
+
+	function _loadfnJS(handler,res,callback){
+		var st = document.createElement("script");
+		st.setAttribute("type","text/javascript");
+		st.setAttribute("charset","utf-8");
+		st.setAttribute("src",res.url);
+		var _dummy = ( res.id ) && st.setAttribute("id",res.id);
+		_dummy = ( res.defer ) && st.setAttribute("defer",res.defer);
+		st.onreadystatechange = st.onload = setUpHandler(st,handler,res,callback);
+		
+		var ref = document.getElementsByTagName('head')[0];
+		var parent;
+		if ( ref !== "undefined" ){
+			if (ref.firstChild){
+				parent = ref;
+				ref = ref.firstChild;
+				parent.insertBefore(st,ref);
+			}
+			else {  
+				ref.appendChild(st);
+			}
+		}
+		else {
+			ref = document.getElementsByTagName('script')[0];
+			parent = ref.parentNode;
+			parent.insertBefore(st,ref);
+		}
+	}
 	
+	function _loadfnCSS(handler,res,callback){
+	}
+	
+	function _loadfnGET(handler,res,callback){
+		console.log('you must implement GET resource loader ....');
+	}
+	
+	/* Loader */
 	var lm = {
 			name: ln,
 			config: new Config(),
@@ -95,18 +148,61 @@ function Loader(ln,config){
 				//console.log('fire bind ...');
 			}
 	};
+		
+	lm.fnLoadJS= Loader.prototype.fnLoadJS;
+	lm.fnLoadCSS = Loader.prototype.fnLoadCSS;
+	lm.fnLoadGET = Loader.prototype.fnLoadGET;
 	
-	lm.fnLoad = Loader.prototype.fnLoad;
-	lm.config.plugLoad(lm.fnLoad);
+	lm.config.plugLoadJS(lm.fnLoadJS);
+	lm.config.plugLoadCSS(lm.fnLoadCSS);
+	lm.config.plugLoadGET(lm.fnLoadGET);
+	
 	lm.config.load(config);
+	
+	/* Attach res function loaders */
+	Loader.prototype._loadfnJS = _loadfnJS;
+	Loader.prototype._loadfnCSS = _loadfnCSS;
+	Loader.prototype._loadfnGET = _loadfnGET;
 	
 	return lm;
 }
 
-Loader.prototype.fnLoad = function(handler,res,callback){
+Loader.prototype.fnLoadJS = function(handler,res,callback){
 	/*
-	1) load js|css|html res
-	2) call handler(res,callback)
-	*/
-	console.info('implement Loader.prototype.fnLoader = function(handler,res,callback){ /*1) load js|css|html res */; /*2) call handler(res,callback) */ }');
+	 * For custom implementation of fnLoadJS
+	 *
+	 * Loader.prototype.fnLoaderJS = function(handler,res,callback){
+	 *     1) es. attach tag sript to dom
+	 *     2) when ready call handler(res,callback);
+	 * }
+	 * 
+	 */
+	Loader.prototype._loadfnJS(handler,res,callback);
 };
+
+Loader.prototype.fnLoadCSS = function(handler,res,callback){
+	/*
+	 * For custom implementation of fnLoadJS
+	 *
+	 * Loader.prototype.fnLoadCSS = function(handler,res,callback){
+	 *     1) attach link tag to dom
+	 *     2) when ready call handler(res,callback);
+	 * }
+	 * 
+	 */
+	Loader.prototype._loadfnCSS(handler,res,callback);
+};
+
+Loader.prototype.fnLoadGET = function(handler,res,callback){
+	/*
+	 * You must implement fnLoadGET Loader don't have a default implementation
+	 *
+	 * Loader.prototype.fnLoadGET = function(handler,res,callback){
+	 *     1) exec GET request
+	 *     2) when ready call handler(res,callback);
+	 * }
+	 * 
+	 */
+	Loader.prototype._loadfnGET(handler,res,callback);
+};
+

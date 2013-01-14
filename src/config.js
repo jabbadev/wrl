@@ -112,4 +112,12 @@ function Config() {
 	this.plugLoadJS = function(fnLoadJS){
 		Resource.prototype.pluggedLoadJS = fnLoadJS;
 	};
+	
+	this.plugLoadCSS = function(fnLoadCSS){
+		Resource.prototype.pluggedLoadCSS = fnLoadCSS;
+	};
+	
+	this.plugLoadGET = function(fnLoadGET){
+		Resource.prototype.pluggedLoadGET = fnLoadGET;
+	};
 }
