@@ -39,8 +39,8 @@
 				this.loaders[ln].loadHTML(jsName);
 				return this.loaders[ln];
 			},
-			fnLoad: function(handler,res,callback){
-				loadfn[res.type](handler,res,callback);
+			fnLoadGET: function(handler,res,callback){
+				console.log('function to load resources [ fnLoadGET ] ...');
 			}
 		}
 	});
