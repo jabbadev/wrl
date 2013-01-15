@@ -132,8 +132,8 @@ function Loader(ln,config){
 	var lm = {
 			name: ln,
 			config: new Config(),
-			attachJS: function(){},
-			attachCSS: function(){},
+			//attachJS: function(){},
+			//attachCSS: function(){},
 			loadJS:function(resName,callback){
 			
 				var done = initDoneFn();			

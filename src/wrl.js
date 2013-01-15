@@ -21,8 +21,8 @@
 				loader[0].bind = $.proxy(loader.bind,loader);
 				
 				loader.loadJS = $.proxy(loader[0].loadJS,loader[0]);
-				loader.loadCSS = $.proxy(loader[0].loadJS,loader[0]);
-				loader.loadHTML = $.proxy(loader[0].loadJS,loader[0]);
+				loader.loadCSS = $.proxy(loader[0].loadCSS,loader[0]);
+				loader.loadGET = $.proxy(loader[0].loadGET,loader[0]);
 				
 				this.loaders[ln] = loader;
 				return loader;

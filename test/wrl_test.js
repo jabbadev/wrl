@@ -180,7 +180,7 @@
 			
 	});
 	
-	asyncTest( "Async test loading scripts",1, function() {	
+	asyncTest( "Async test loading scripts",2, function() {	
 			
 		var calculator = $.wrl.addLoader('calc',{
 			js: {
@@ -190,6 +190,13 @@
 				e: { url: "../libs/test-res/e.js"},
 				f: { url: "../libs/test-res/f.js"},
 				calc1 : { url: "../libs/test-res/calc1.js", require: ['a','b'] }  
+			},
+			css: {
+				virtual : { require: [ "a","b" ] },
+				a: { url: "../libs/test-res/a.css" },
+				b: { url: "../libs/test-res/b.css", require: [ "z","y" ]},
+				z: { url: "../libs/test-res/z.css" },
+				y: { url: "../libs/test-res/y.css" }
 			}
 		});
 		
@@ -198,11 +205,17 @@
 			calculator.loadJS('calc1',callback);
 		};
 		
+		function testCss(callback){
+			calculator.loadCSS('virtual',callback);
+		};
 		
 		BASE_TS = new Date().getTime();
 		calc1(function(){
-			//console.log('C_TS: ',C_TS,' B_TS',B_TS);
 			equal(CALC1,100000,"javascript calc1 is loaded");
+		});
+		
+		testCss(function(){
+			equal($('#wrlbox').css('border'),"40px","loaded pudding style to 40px");
 		});
 		
 		setTimeout(function(){
