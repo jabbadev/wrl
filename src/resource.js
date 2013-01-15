@@ -32,7 +32,9 @@ function Resource(resName,resType,resConf){
 	this.load = function(callback){
 		res.loading = true;
 		//this.pluggedLoad(this.resLoadHandler,res,callback);
-		this.pluggedLoadJS(this.resLoadHandler,res,callback);
+		
+		var _d = ( res.type === "js" ) && this.pluggedLoadJS(this.resLoadHandler,res,callback);
+		_d = ( res.type === "css" ) && this.pluggedLoadCSS(this.resLoadHandler,res,callback);
 	};
 	
 	this.resLoadHandler = function(res,callback){
@@ -45,6 +47,7 @@ function Resource(resName,resType,resConf){
 	this.require = function(){return res.require;};
 	this.name = function(){return res.name;};
 	this.isVirtual = function(){return res.virtual;};
+	this.attach = function(){return res.attach;};
 	
 	/* Init Instance */
 	var res = {};
@@ -58,6 +61,11 @@ function Resource(resName,resType,resConf){
 	res.loaded = false;
 	res.loading = false;
 	res.media = resConf.media || null;
+	res.attach = resConf.attach || "first";
+	/* only for css:
+	 * 1) first ( attach on top of head )
+	 * 2) last ( append to head )
+	 * */
 }
 
 Resource.prototype.pluggedLoad = function(handler,res,callback){

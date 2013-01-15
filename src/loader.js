@@ -1,7 +1,8 @@
 /*global Resource:true Config:true console:true*/
 
-function Loader(ln,config){	
-	/* Private functions */	
+function Loader(ln,config){
+	
+	/* private functions that can be overridden  */	
 	function setUpHandler(st,handler,res,callback){
 		var done = false;
 		return function(){
@@ -30,7 +31,7 @@ function Loader(ln,config){
 		
 		var ref = document.getElementsByTagName('head')[0];
 		var parent;
-		if ( ref !== "undefined" ){
+		if ( ref ){
 			if (ref.firstChild){
 				parent = ref;
 				ref = ref.firstChild;
@@ -48,10 +49,83 @@ function Loader(ln,config){
 	}
 	
 	function _loadfnCSS(handler,res,callback){
+		var st = document.createElement("link");
+		st.setAttribute("type","text/css");
+		st.setAttribute("rel","stylesheet");
+		st.setAttribute("href",res.url);
+		st.onreadystatechange = st.onload = setUpHandler(st,handler,res,callback);
+		
+		var ref = document.getElementsByTagName("head")[0];
+		var parent;
+		if ( ref ){
+			if ( res.attach === "first" ){
+				if ( ref.firstChild ){
+					parent = ref;
+					ref = ref.firstChild;
+					parent.insertBefore(st,ref);
+				}
+				else {
+					ref.appendChild(st);
+				}
+			}
+			if ( res.attach === "last" ){
+				ref.appendChild(st);
+			}
+		}
 	}
 	
 	function _loadfnGET(handler,res,callback){
 		console.log('you must implement GET resource loader ....');
+	}
+	
+	/* Private helper function */
+	
+	function initDoneFn(){
+		var _done = false;
+		return function(done){
+			if ( typeof(done)!== "undefined" ){
+				_done = done;
+			}
+			return _done;
+		};
+	}
+	
+	function initCd(count){
+		return function(){
+			return count--;
+		};
+	}
+	
+	function initLastFn(i,req,cd,done){
+		return function(){
+			//console.info(req[i].res().name()," last attach");
+			req[i].res().load(function(){
+				//console.info(req[i].res().name()," end loaded");
+				if(!cd())done(true);
+			});
+		};
+	}
+	
+	function initWaitFn(i,req,cd,done,fn){
+		return function(){
+			//console.info(req[i].res().name()," wait attach");
+			req[i].res().load(function(){
+				//console.info(req[i].res().name()," wait loaded");
+				if(!cd())done(true);
+				fn[i+1]();
+			});
+		};
+	}
+	
+	function initNoWaitFn(i,req,cd,done,fn){
+		return function(){
+			//console.info(req[i].res().name()," attach");
+			req[i].res().load(function(){
+				//console.info(req[i].res().name()," loaded");
+				if(!cd())done(true);
+			});
+			fn[i+1]();
+		};
 	}
 	
 	/* Loader */
@@ -62,62 +136,28 @@ function Loader(ln,config){
 			attachCSS: function(){},
 			loadJS:function(resName,callback){
 			
-				var done = (function(){
-					var _done = false;
-					return function(done){
-						if ( typeof(done)!== "undefined" ){
-							_done = done;
-						}
-						return _done;
-					};
-				})();
-							
+				var done = initDoneFn();			
 				var req = this.config.getJsReq(resName);
 				
 				var loadReq = (function(req){
+					var cd = initCd(req.length-1);
 					
-					var cd = (function(count){
-						return function(){
-							return count--;
-						};
-					})(req.length-1);
-					
-					function getFn(i,req,fn,cd){
+					function getFn(i,req,fn,cd,done){
 						if (i===req.length-1){
-							return function(){
-								//console.info(req[i].res().name()," last attach");
-								req[i].res().load(function(){
-									//console.info(req[i].res().name()," end loaded");
-									if(!cd())done(true);
-								});
-							};
+							return initLastFn(i,req,cd,done);
 						}
 						else if( req[i].meth === "wait" ){
-							return function(){
-									//console.info(req[i].res().name()," wait attach");
-									req[i].res().load(function(){
-										//console.info(req[i].res().name()," wait loaded");
-										if(!cd())done(true);
-										fn[i+1]();
-									});
-							};
+							return initWaitFn(i,req,cd,done,fn);
 						}
 						else {
-							return function(){
-									//console.info(req[i].res().name()," attach");
-									req[i].res().load(function(){
-										//console.info(req[i].res().name()," loaded");
-										if(!cd())done(true);
-									});
-									fn[i+1]();
-							};
+							return initNoWaitFn(i,req,cd,done,fn);
 						}
 					}
 					
 					return function(){
 						var fn = [];
 						for(var i=req.length-1;i>=0;i-- ){
-							fn.unshift(getFn(i,req,fn,cd));
+							fn.unshift(getFn(i,req,fn,cd,done));
 						}
 						fn[0]();
 					};
@@ -135,7 +175,45 @@ function Loader(ln,config){
 				},1);
 						
 			},
-			loadCSS:function(id,resName){
+			loadCSS:function(resName,callback){
+				var done = initDoneFn();
+				var req = this.config.getCssReq(resName);
+				
+				var loadReq = (function(req){
+					var cd = initCd(req.length-1);
+					
+					function getFn(i,req,fn,cd,done){
+						if (i===req.length-1){
+							return initLastFn(i,req,cd,done);
+						}
+						else if( req[i].meth === "wait" ){
+							return initWaitFn(i,req,cd,done,fn);
+						}
+						else {
+							return initNoWaitFn(i,req,cd,done,fn);
+						}
+					}
+					
+					return function(){
+						var fn = [];
+						for(var i=req.length-1;i>=0;i-- ){
+							fn.unshift(getFn(i,req,fn,cd,done));
+						}
+						fn[0]();
+					};
+					
+				})(req);
+				
+				var lr = ( req.length ) && setTimeout(loadReq,1);
+				
+				/* wait until all ready */
+				var wait = setInterval(function(){
+					if(done()){
+						callback();
+						clearInterval(wait);
+					}
+				},1);
+				
 				//console.log('loadCSS: ',resName);
 			},
 			loadHTML:function(id,resName){

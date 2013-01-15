@@ -30,6 +30,7 @@
 			this.res2 = new Resource("b","js",{ defer: "true", url: "b.js", require: [ "a" ]});
 			this.virt = new Resource("virt","js",{require: ["a","b"]});
 			this.css = new Resource("a","css",{ id: "cssID", url: "a.css", media: "print" });
+			this.css1 = new Resource("a","css",{ attach: "last", url: "a.css" });
 			this.load = new Resource("a","js",{ url: "../libs/test-res/a.js" });
 			this.res3 = new Resource("a","js",{ url: "a.js", require: [ "b","z","c:wait","b:wait","x","y" ]});
 			
@@ -60,7 +61,10 @@
 		equal(pa().isLoaded(),true,"res is loaded [ access by pointer ]");
 		ok(!this.resLoaded,'check res not loaded');
 		this.load.load(function(){$this.resLoaded = true; ok($this.resLoaded,'callback resource is loaded');});
-		equal(this.load.isLoaded(),true,"Resource a is loaded after call load function");		
+		equal(this.load.isLoaded(),true,"Resource a is loaded after call load function");
+		equal(this.css.attach(),"first","Attach css on top of the head");
+		equal(this.css1.attach(),"last","append css on head");
+		
 	});
 	
 	module('test [ Config ] object',{
@@ -80,7 +84,7 @@
 		
 		this.config.load({
 			js:{
-				virtual: {require: ['a','c']},
+				virtual: { require: ['a','c'] },
 				a: {url: "a.js",require: ['d']},
 				b: {url: "b.js"},
 				c: {url: "c.js"},
@@ -92,7 +96,8 @@
 				q: {url: "q.js"}
 			},
 			css:{
-				a: {url: "a.css" },
+				virtual: { require: ['a','b'] },
+				a: {url: "a.css", attach: "last" },
 				b: {url: "b.js"}
 			},
 			html:{a: {url: "a.htm"}}
@@ -144,6 +149,12 @@
 		var $this = this;
 		res = this.config.getJsReq('q')[0];
 		res.res().load(function(){ ok($this.q,"res q loaded ...."); });
+		
+		var csslist = this.config.getCssReq('virtual');
+		equal(csslist[0].res().name(),"a","first css is a.css");
+		equal(csslist[0].res().attach(),"last","append a.css");
+		equal(csslist[1].res().name(),"b","second css is b.css");
+		equal(csslist[1].res().name(),"b","attach b on top of head");
 
 	});
 	
