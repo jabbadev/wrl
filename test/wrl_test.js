@@ -183,23 +183,26 @@
 	
 	asyncTest( "Async test loading scripts",3, function() {	
 			
-		var calculator = $.wrl.addLoader({name: 'calc',config: {
-			js: {
-				a: { url: "../libs/test-res/a.js" },
-				b: { url: "../libs/test-res/b.js" , require: ['c:wait'] },
-				c: { url: "../libs/test-res/c.js" },
-				e: { url: "../libs/test-res/e.js", require: ['f'] },
-				f: { url: "../libs/test-res/f.js"},
-				calc1 : { url: "../libs/test-res/calc1.js", require: ['a','b'] }  
-			},
-			css: {
-				virtual : { require: [ "a","b" ] },
-				a: { url: "../libs/test-res/a.css" },
-				b: { url: "../libs/test-res/b.css", require: [ "z","y" ]},
-				z: { url: "../libs/test-res/z.css" },
-				y: { url: "../libs/test-res/y.css", attach: "last" }
-			}
-		}});
+		var calculator = $.wrl.addLoader({
+			name: 'calc',
+			opt : { events: { type: "byname" } },
+			config: {
+				js: {
+					a: { url: "../libs/test-res/a.js" },
+					b: { url: "../libs/test-res/b.js" , require: ['c:wait'] },
+					c: { url: "../libs/test-res/c.js" },
+					e: { url: "../libs/test-res/e.js", require: ['f'] },
+					f: { url: "../libs/test-res/f.js"},
+					calc1 : { url: "../libs/test-res/calc1.js", require: ['a','b'] }  
+				},
+				css: {
+					virtual : { require: [ "a","b" ] },
+					a: { url: "../libs/test-res/a.css" },
+					b: { url: "../libs/test-res/b.css", require: [ "z","y" ]},
+					z: { url: "../libs/test-res/z.css" },
+					y: { url: "../libs/test-res/y.css", attach: "last" }
+				}
+			}});
 		
 		function calc1(callback){
 			calculator.loadJS('calc1',callback);
@@ -212,8 +215,8 @@
 		function load_e(callback){
 			e = 0;
 			calculator.loadJS('e');
-			calculator.on('js-e',function(event,resource){
-				equal(e,100000,'event js-e script e.js is ready ');
+			calculator.on('js-e',function(event,eventData){
+				equal(e,100000,'event jsE script e.js is ready ');
 			});
 		}
 		

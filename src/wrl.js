@@ -16,7 +16,7 @@
 				//Loader.prototype.fnLoadCSS = this.fnLoadCSS;
 				//Loader.prototype.fnLoadGET = this.fnLoadGET;
 				
-				var loader = $(new Loader({ name: lc.name, config: lc.config}));
+				var loader = $(new Loader(lc));
 				loader[0].trigger = $.proxy(loader.trigger,loader);
 				loader[0].bind = $.proxy(loader.bind,loader);
 				

@@ -1,7 +1,6 @@
 /*global Resource:true Config:true console:true*/
 
 function Loader(lc){
-	
 	/* private functions that can be overridden  */	
 	function setUpHandler(st,handler,res,callback){
 		var done = false;
@@ -96,14 +95,26 @@ function Loader(lc){
 		};
 	}
 	
+	function notify(res){
+		var status = (this.opt.events.notifyStatus) && this.config[res.type+"Ready"](res.name);
+		
+		if ( this.opt.events.type === "onload" ) {
+			var eventName = res.type + "-" + "loaded";
+		}
+		if ( this.opt.events.type === "byname" ){
+			var eventName = res.type + "-" + res.name;
+		}
+		this.trigger(eventName,{ res: res, status: status });
+	}
+	
 	function initLastFn(i,req,cd,done){
 		var self = this;
 		return function(){
 			//console.info(req[i].res().name()," last attach");
 			req[i].res().load(function(res){
-				self.trigger(res.type + "-" + res.name,res);
-				//self.trigger()
-				//console.info(req[i].res().name()," end loaded");
+				if (self.opt.events){
+					setTimeout(function(){notify.call(self,res);},0);
+				}
 				if(!cd())done(true);
 			});
 		};
@@ -173,8 +184,23 @@ function Loader(lc){
 	}
 	
 	/* Loader */
+	if(typeof lc.opt !== "undefined"){
+		var def = { type: 'byname', notifyStatus: false };
+		if (!!lc.opt.events){
+			for( var i in def ){
+				lc.opt.events[i] = (typeof lc.opt.events[i] !== "undefined") && lc.opt.events[i] || def[i];
+			}
+		}
+		else {
+			lc.opt.events = { type: 'byname',notifyStatus: false };
+		}
+	}
+	else {
+		lc.opt = {events: false};
+	}
+	
 	var lm = {
-			//opt:( lc.opt )||{events: false}, 
+			opt:lc.opt, 
 			name: lc.name,
 			config: new Config(),
 			loadJS:function(resName,callback){
@@ -183,7 +209,7 @@ function Loader(lc){
 			loadCSS:function(resName,callback){
 				_loadJsOrCss.call(this,this.config.getCssReq(resName),callback);
 			},
-			loadHTML:function(id,resName){
+			loadGET:function(id,resName){
 				//console.log('loadHTML: ',resName);
 			},
 			trigger: function(evetType,extraParams){
@@ -193,7 +219,7 @@ function Loader(lc){
 				//console.log('fire bind ...');
 			}
 	};
-		
+	
 	lm.fnLoadJS= Loader.prototype.fnLoadJS;
 	lm.fnLoadCSS = Loader.prototype.fnLoadCSS;
 	lm.fnLoadGET = Loader.prototype.fnLoadGET;
