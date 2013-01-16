@@ -97,9 +97,12 @@ function Loader(ln,config){
 	}
 	
 	function initLastFn(i,req,cd,done){
+		var self = this;
 		return function(){
 			//console.info(req[i].res().name()," last attach");
-			req[i].res().load(function(){
+			req[i].res().load(function(res){
+				console.log(res.name);
+				//self.trigger()
 				//console.info(req[i].res().name()," end loaded");
 				if(!cd())done(true);
 			});
@@ -107,7 +110,8 @@ function Loader(ln,config){
 	}
 	
 	function initWaitFn(i,req,cd,done,fn){
-		return function(){
+		var self = this;
+		return function(res){
 			//console.info(req[i].res().name()," wait attach");
 			req[i].res().load(function(){
 				//console.info(req[i].res().name()," wait loaded");
@@ -118,7 +122,8 @@ function Loader(ln,config){
 	}
 	
 	function initNoWaitFn(i,req,cd,done,fn){
-		return function(){
+		var self = this;
+		return function(res){
 			//console.info(req[i].res().name()," attach");
 			req[i].res().load(function(){
 				//console.info(req[i].res().name()," loaded");
@@ -129,18 +134,19 @@ function Loader(ln,config){
 	}
 	
 	function _loadJsOrCss(req,callback){
+		var self = this;
 		var done = initDoneFn();
 		var cd = initCd(req.length-1);
 		
 		function getFn(i,req,fn,cd,done){
 			if (i===req.length-1){
-				return initLastFn(i,req,cd,done);
+				return initLastFn.call(self,i,req,cd,done);
 			}
 			else if( req[i].meth === "wait" ){
-				return initWaitFn(i,req,cd,done,fn);
+				return initWaitFn.call(self,i,req,cd,done,fn);
 			}
 			else {
-				return initNoWaitFn(i,req,cd,done,fn);
+				return initNoWaitFn.call(self,i,req,cd,done,fn);
 			}
 		}
 		
@@ -148,7 +154,7 @@ function Loader(ln,config){
 			return function(){
 				var fn = [];
 				for(var i=req.length-1;i>=0;i-- ){
-					fn.unshift(getFn(i,req,fn,cd,done));
+					fn.unshift(getFn.call(self,i,req,fn,cd,done));
 				}
 				fn[0]();
 			};
@@ -169,16 +175,16 @@ function Loader(ln,config){
 			name: ln,
 			config: new Config(),
 			loadJS:function(resName,callback){
-				_loadJsOrCss(this.config.getJsReq(resName),callback);
+				_loadJsOrCss.call(this,this.config.getJsReq(resName),callback);
 			},
 			loadCSS:function(resName,callback){
-				_loadJsOrCss(this.config.getCssReq(resName),callback);
+				_loadJsOrCss.call(this,this.config.getCssReq(resName),callback);
 			},
 			loadHTML:function(id,resName){
 				//console.log('loadHTML: ',resName);
 			},
 			trigger: function(evetType,extraParams){
-				//console.log('fire trigger ...',evetType,extraParams);
+				console.log('fire trigger ...',evetType,extraParams);
 			},
 			bind: function(){
 				//console.log('fire bind ...');
