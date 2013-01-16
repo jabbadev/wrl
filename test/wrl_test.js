@@ -196,7 +196,7 @@
 				a: { url: "../libs/test-res/a.css" },
 				b: { url: "../libs/test-res/b.css", require: [ "z","y" ]},
 				z: { url: "../libs/test-res/z.css" },
-				y: { url: "../libs/test-res/y.css" }
+				y: { url: "../libs/test-res/y.css", attach: "last" }
 			}
 		});
 		
@@ -214,9 +214,11 @@
 			equal(CALC1,100000,"javascript calc1 is loaded");
 		});
 		
-		testCss(function(){
-			equal($('#wrlbox').css('border'),"40px","loaded pudding style to 40px");
-		});
+		setTimeout(function(){
+			testCss(function(){
+				equal($('#wrlbox').css('text-align'),"center","label wrlbox moved to center");
+			});
+		},2000);
 		
 		setTimeout(function(){
 			start();
