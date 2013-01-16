@@ -1,6 +1,6 @@
 /*global Resource:true Config:true console:true*/
 
-function Loader(ln,config){
+function Loader(lc){
 	
 	/* private functions that can be overridden  */	
 	function setUpHandler(st,handler,res,callback){
@@ -174,7 +174,8 @@ function Loader(ln,config){
 	
 	/* Loader */
 	var lm = {
-			name: ln,
+			//opt:( lc.opt )||{events: false}, 
+			name: lc.name,
 			config: new Config(),
 			loadJS:function(resName,callback){
 				_loadJsOrCss.call(this,this.config.getJsReq(resName),callback);
@@ -201,7 +202,7 @@ function Loader(ln,config){
 	lm.config.plugLoadCSS(lm.fnLoadCSS);
 	lm.config.plugLoadGET(lm.fnLoadGET);
 	
-	lm.config.load(config);
+	lm.config.load(lc.config);
 	
 	/* Attach res function loaders */
 	Loader.prototype._loadfnJS = _loadfnJS;

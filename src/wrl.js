@@ -11,12 +11,12 @@
 	$.extend(
 		{ wrl: {
 			loaders: {},
-			addLoader: function(ln,config){
+			addLoader: function(lc){
 				//Loader.prototype.fnLoadJS = this.fnLoadJS;
 				//Loader.prototype.fnLoadCSS = this.fnLoadCSS;
 				//Loader.prototype.fnLoadGET = this.fnLoadGET;
 				
-				var loader = $(new Loader(ln,config));
+				var loader = $(new Loader({ name: lc.name, config: lc.config}));
 				loader[0].trigger = $.proxy(loader.trigger,loader);
 				loader[0].bind = $.proxy(loader.bind,loader);
 				
@@ -24,7 +24,7 @@
 				loader.loadCSS = $.proxy(loader[0].loadCSS,loader[0]);
 				loader.loadGET = $.proxy(loader[0].loadGET,loader[0]);
 				
-				this.loaders[ln] = loader;
+				this.loaders[lc.name] = loader;
 				return loader;
 			},
 			loadJS: function(ln,jsName,callback){

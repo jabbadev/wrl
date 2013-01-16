@@ -97,7 +97,7 @@ function Config() {
 	};
 	
 	this.load = function(config){
-		for(var resType in {js: true,css: true,html: true }){
+		for(var resType in {js: true,css: true,get: true }){
 			conf[resType]={};
 			for(var resName in config[resType]){
 				conf[resType][resName]= new Resource(resName,resType,config[resType][resName]);

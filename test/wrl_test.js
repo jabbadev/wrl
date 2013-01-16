@@ -167,13 +167,14 @@
 	test('test [ jQuery.wrl ]',function(){
 		ok(typeof($.wrl)=== "object","wrl plugin is ready");
 		
-		var loader = $.wrl.addLoader('test',{
+		var loader = $.wrl.addLoader({name: 'test',
+			config: {
 			js:{'dep': { url: "../libs/test-res/dep.js" ,depon: ['e','f'] }, 'req': { url: "../libs/test-res/req.js" ,require: ['e','f'] }, a: {url: "a.js", require: ['d'] }, b: {url: "b.js"}, c: {url: "c.js"},
 				d: {url: "../libs/test-res/d.js", require: ['e','f'], depon: [ "z" ] }, e: { url: "../libs/test-res/e.js" }, f: {url: "../libs/test-res/f.js"},
 				z: { url: "z.js", depon: ["p","q"] },p: {url: "p.js"},q: {url: "q.js"} },
 			css:{a: {url: "a.css" }, b: {url: "b.js" } },
 			html:{ a: {url: "a.htm"}}
-		});
+		}});
 		
 		ok(typeof(loader)==="object","jquery chain obj");
 		ok(typeof($.wrl.loaders.test)==="object","loader test is ready");
@@ -182,7 +183,7 @@
 	
 	asyncTest( "Async test loading scripts",3, function() {	
 			
-		var calculator = $.wrl.addLoader('calc',{
+		var calculator = $.wrl.addLoader({name: 'calc',config: {
 			js: {
 				a: { url: "../libs/test-res/a.js" },
 				b: { url: "../libs/test-res/b.js" , require: ['c:wait'] },
@@ -198,13 +199,7 @@
 				z: { url: "../libs/test-res/z.css" },
 				y: { url: "../libs/test-res/y.css", attach: "last" }
 			}
-		});
-		
-		/*
-		calculator.bind('jsLoaded',function(e){
-			console.log('event data',e);
-		});
-		*/
+		}});
 		
 		function calc1(callback){
 			calculator.loadJS('calc1',callback);
@@ -217,7 +212,7 @@
 		function load_e(callback){
 			e = 0;
 			calculator.loadJS('e');
-			calculator.on('js-e',function(){
+			calculator.on('js-e',function(event,resource){
 				equal(e,100000,'event js-e script e.js is ready ');
 			});
 		}
@@ -234,9 +229,6 @@
 		testCss(function(){
 			equal($('#wrlbox').css('text-align'),"center","label wrlbox moved to center");
 		});
-		
-		//setTimeout(function(){
-		//},2000);
 		
 		setTimeout(function(){
 			start();
