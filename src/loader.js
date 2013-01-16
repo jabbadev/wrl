@@ -101,7 +101,7 @@ function Loader(ln,config){
 		return function(){
 			//console.info(req[i].res().name()," last attach");
 			req[i].res().load(function(res){
-				console.log(res.name);
+				self.trigger(res.type + "-" + res.name,res);
 				//self.trigger()
 				//console.info(req[i].res().name()," end loaded");
 				if(!cd())done(true);
@@ -111,9 +111,10 @@ function Loader(ln,config){
 	
 	function initWaitFn(i,req,cd,done,fn){
 		var self = this;
-		return function(res){
+		return function(){
 			//console.info(req[i].res().name()," wait attach");
-			req[i].res().load(function(){
+			req[i].res().load(function(res){
+				self.trigger(res.type + "Loaded",res);
 				//console.info(req[i].res().name()," wait loaded");
 				if(!cd())done(true);
 				fn[i+1]();
@@ -123,9 +124,9 @@ function Loader(ln,config){
 	
 	function initNoWaitFn(i,req,cd,done,fn){
 		var self = this;
-		return function(res){
+		return function(){
 			//console.info(req[i].res().name()," attach");
-			req[i].res().load(function(){
+			req[i].res().load(function(res){
 				//console.info(req[i].res().name()," loaded");
 				if(!cd())done(true);
 			});
@@ -164,7 +165,8 @@ function Loader(ln,config){
 		/* wait until all ready */
 		var wait = setInterval(function(){
 			if(done()){
-				callback();
+				var _d = (typeof callback === "function") && callback();
+				//callback();
 				clearInterval(wait);
 			}
 		},1);

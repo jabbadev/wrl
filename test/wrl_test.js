@@ -180,14 +180,14 @@
 			
 	});
 	
-	asyncTest( "Async test loading scripts",2, function() {	
+	asyncTest( "Async test loading scripts",3, function() {	
 			
 		var calculator = $.wrl.addLoader('calc',{
 			js: {
 				a: { url: "../libs/test-res/a.js" },
 				b: { url: "../libs/test-res/b.js" , require: ['c:wait'] },
 				c: { url: "../libs/test-res/c.js" },
-				e: { url: "../libs/test-res/e.js"},
+				e: { url: "../libs/test-res/e.js", require: ['f'] },
 				f: { url: "../libs/test-res/f.js"},
 				calc1 : { url: "../libs/test-res/calc1.js", require: ['a','b'] }  
 			},
@@ -200,6 +200,11 @@
 			}
 		});
 		
+		/*
+		calculator.bind('jsLoaded',function(e){
+			console.log('event data',e);
+		});
+		*/
 		
 		function calc1(callback){
 			calculator.loadJS('calc1',callback);
@@ -209,16 +214,29 @@
 			calculator.loadCSS('virtual',callback);
 		};
 		
+		function load_e(callback){
+			e = 0;
+			calculator.loadJS('e');
+			calculator.on('js-e',function(){
+				equal(e,100000,'event js-e script e.js is ready ');
+			});
+		}
+		
 		BASE_TS = new Date().getTime();
 		calc1(function(){
 			equal(CALC1,100000,"javascript calc1 is loaded");
 		});
 		
-		setTimeout(function(){
-			testCss(function(){
-				equal($('#wrlbox').css('text-align'),"center","label wrlbox moved to center");
-			});
-		},2000);
+		load_e(function(){
+			ok(true,'e is loaded ....');
+		});
+		
+		testCss(function(){
+			equal($('#wrlbox').css('text-align'),"center","label wrlbox moved to center");
+		});
+		
+		//setTimeout(function(){
+		//},2000);
 		
 		setTimeout(function(){
 			start();
