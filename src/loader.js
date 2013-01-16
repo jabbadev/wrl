@@ -128,93 +128,51 @@ function Loader(ln,config){
 		};
 	}
 	
+	function _loadJsOrCss(req,callback){
+		var done = initDoneFn();
+		var cd = initCd(req.length-1);
+		
+		function getFn(i,req,fn,cd,done){
+			if (i===req.length-1){
+				return initLastFn(i,req,cd,done);
+			}
+			else if( req[i].meth === "wait" ){
+				return initWaitFn(i,req,cd,done,fn);
+			}
+			else {
+				return initNoWaitFn(i,req,cd,done,fn);
+			}
+		}
+		
+		var loadReq = (function(){
+			return function(){
+				var fn = [];
+				for(var i=req.length-1;i>=0;i-- ){
+					fn.unshift(getFn(i,req,fn,cd,done));
+				}
+				fn[0]();
+			};
+		})(req);
+		
+		var lr = ( req.length ) && setTimeout(loadReq,1);
+		/* wait until all ready */
+		var wait = setInterval(function(){
+			if(done()){
+				callback();
+				clearInterval(wait);
+			}
+		},1);
+	}
+	
 	/* Loader */
 	var lm = {
 			name: ln,
 			config: new Config(),
-			//attachJS: function(){},
-			//attachCSS: function(){},
 			loadJS:function(resName,callback){
-			
-				var done = initDoneFn();			
-				var req = this.config.getJsReq(resName);
-				
-				var loadReq = (function(req){
-					var cd = initCd(req.length-1);
-					
-					function getFn(i,req,fn,cd,done){
-						if (i===req.length-1){
-							return initLastFn(i,req,cd,done);
-						}
-						else if( req[i].meth === "wait" ){
-							return initWaitFn(i,req,cd,done,fn);
-						}
-						else {
-							return initNoWaitFn(i,req,cd,done,fn);
-						}
-					}
-					
-					return function(){
-						var fn = [];
-						for(var i=req.length-1;i>=0;i-- ){
-							fn.unshift(getFn(i,req,fn,cd,done));
-						}
-						fn[0]();
-					};
-					
-				})(req);
-				
-				var lr = ( req.length ) && setTimeout(loadReq,1);
-				
-				/* wait until all ready */
-				var wait = setInterval(function(){
-					if(done()){
-						callback();
-						clearInterval(wait);
-					}
-				},1);
-						
+				_loadJsOrCss(this.config.getJsReq(resName),callback);
 			},
 			loadCSS:function(resName,callback){
-				var done = initDoneFn();
-				var req = this.config.getCssReq(resName);
-				
-				var loadReq = (function(req){
-					var cd = initCd(req.length-1);
-					
-					function getFn(i,req,fn,cd,done){
-						if (i===req.length-1){
-							return initLastFn(i,req,cd,done);
-						}
-						else if( req[i].meth === "wait" ){
-							return initWaitFn(i,req,cd,done,fn);
-						}
-						else {
-							return initNoWaitFn(i,req,cd,done,fn);
-						}
-					}
-					
-					return function(){
-						var fn = [];
-						for(var i=req.length-1;i>=0;i-- ){
-							fn.unshift(getFn(i,req,fn,cd,done));
-						}
-						fn[0]();
-					};
-					
-				})(req);
-				
-				var lr = ( req.length ) && setTimeout(loadReq,1);
-				
-				/* wait until all ready */
-				var wait = setInterval(function(){
-					if(done()){
-						callback();
-						clearInterval(wait);
-					}
-				},1);
-				
-				//console.log('loadCSS: ',resName);
+				_loadJsOrCss(this.config.getCssReq(resName),callback);
 			},
 			loadHTML:function(id,resName){
 				//console.log('loadHTML: ',resName);

@@ -100,7 +100,7 @@
 				a: {url: "a.css", attach: "last" },
 				b: {url: "b.js"}
 			},
-			html:{a: {url: "a.htm"}}
+			get:{a: {url: "a.htm"}}
 		});
 		
 		var reslist = this.config.getJsReq('virtual');
