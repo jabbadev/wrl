@@ -233,15 +233,16 @@
 		}
 		
 		BASE_TS = new Date().getTime();
-		calc1(function(){
+		calc1(function(reslist){
+			console.log(reslist);
 			equal(CALC1,100000,"javascript calc1 is loaded");
 		});
 		
-		load_e(function(){
+		load_e(function(reslist){
 			ok(true,'e is loaded ....');
 		});
 		
-		testCss(function(){
+		testCss(function(reslist){
 			equal($('#wrlbox').css('text-align'),"center","label wrlbox moved to center");
 		});
 		

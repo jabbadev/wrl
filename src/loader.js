@@ -110,11 +110,12 @@ function Loader(lc){
 		this.trigger(eventName,{ res: res, status: status });
 	}
 	
-	function initLastFn(i,req,cd,done){
+	function initLastFn(i,req,cd,done,reslist){
 		var self = this;
 		return function(){
 			//console.info(req[i].res().name()," last attach");
 			req[i].res().load(function(res){
+				reslist.push(res);
 				if (self.opt.events){
 					setTimeout(function(){notify.call(self,res);},0);
 				}
@@ -123,12 +124,13 @@ function Loader(lc){
 		};
 	}
 	
-	function initWaitFn(i,req,cd,done,fn){
+	function initWaitFn(i,req,cd,done,fn,reslist){
 		var self = this;
 		return function(){
 			//console.info(req[i].res().name()," wait attach");
 			req[i].res().load(function(res){
 				//console.info(req[i].res().name()," wait loaded");
+				reslist.push(res);
 				if (self.opt.events){
 					setTimeout(function(){notify.call(self,res);},0);
 				}
@@ -138,12 +140,13 @@ function Loader(lc){
 		};
 	}
 	
-	function initNoWaitFn(i,req,cd,done,fn){
+	function initNoWaitFn(i,req,cd,done,fn,reslist){
 		var self = this;
 		return function(){
 			//console.info(req[i].res().name()," attach");
 			req[i].res().load(function(res){
 				//console.info(req[i].res().name()," loaded");
+				reslist.push(res);
 				if (self.opt.events){
 					setTimeout(function(){notify.call(self,res);},0);
 				}
@@ -158,23 +161,24 @@ function Loader(lc){
 		var done = initDoneFn();
 		var cd = initCd(req.length-1);
 		
-		function getFn(i,req,fn,cd,done){
+		function getFn(i,req,fn,reslist,cd,done){
 			if (i===req.length-1){
-				return initLastFn.call(self,i,req,cd,done);
+				return initLastFn.call(self,i,req,cd,done,reslist);
 			}
 			else if( req[i].meth === "wait" ){
-				return initWaitFn.call(self,i,req,cd,done,fn);
+				return initWaitFn.call(self,i,req,cd,done,fn,reslist);
 			}
 			else {
-				return initNoWaitFn.call(self,i,req,cd,done,fn);
+				return initNoWaitFn.call(self,i,req,cd,done,fn,reslist);
 			}
 		}
 		
+		var reslist = [];
 		var loadReq = (function(){
 			return function(){
 				var fn = [];
 				for(var i=req.length-1;i>=0;i-- ){
-					fn.unshift(getFn.call(self,i,req,fn,cd,done));
+					fn.unshift(getFn.call(self,i,req,fn,reslist,cd,done));
 				}
 				fn[0]();
 			};
@@ -184,45 +188,7 @@ function Loader(lc){
 		/* wait until all ready */
 		var wait = setInterval(function(){
 			if(done()){
-				var _d = (typeof callback === "function") && callback();
-				clearInterval(wait);
-			}
-		},1);
-	}
-	
-	
-	function _loadGet(req,callback){
-		var self = this;
-		var done = initDoneFn();
-		var cd = initCd(req.length-1);
-		
-		function getFn(i,req,fn,cd,done){
-			if (i===req.length-1){
-				return initLastFn.call(self,i,req,cd,done);
-			}
-			else if( req[i].meth === "wait" ){
-				return initWaitFn.call(self,i,req,cd,done,fn);
-			}
-			else {
-				return initNoWaitFn.call(self,i,req,cd,done,fn);
-			}
-		}
-		
-		var loadReq = (function(){
-			return function(){
-				var fn = [];
-				for(var i=req.length-1;i>=0;i-- ){
-					fn.unshift(getFn.call(self,i,req,fn,cd,done));
-				}
-				fn[0]();
-			};
-		})(req);
-		
-		var lr = ( req.length ) && setTimeout(loadReq,1);
-		/* wait until all ready */
-		var wait = setInterval(function(){
-			if(done()){
-				var _d = (typeof callback === "function") && callback();
+				var _d = (typeof callback === "function") && callback(reslist);
 				clearInterval(wait);
 			}
 		},1);
@@ -256,7 +222,6 @@ function Loader(lc){
 			},
 			loadGET:function(resName,callback){
 				_loadGet.call(this,this.config.getGetReq(resName),callback);
-				//console.log('loadHTML: ',resName);
 			},
 			trigger: function(evetType,extraParams){
 				console.log('fire trigger ...',evetType,extraParams);
