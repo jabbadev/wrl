@@ -87,6 +87,7 @@ function Config() {
 	
 	this.getJsReq = function(resName){return _getRes('js',resName);};
 	this.getCssReq = function(resName){return _getRes('css',resName);};
+	this.getGetReq = function(resName){return _getRes('get',resName);};
 		
 	this.jsReady = function(resName){
 		return _resReady('js',resName);
@@ -94,6 +95,10 @@ function Config() {
 	
 	this.cssReady = function(resName){
 		return _resReady('css',resName);
+	};
+	
+	this.getReady = function(resName){
+		return _resReady('get',resName);
 	};
 	
 	this.load = function(config){

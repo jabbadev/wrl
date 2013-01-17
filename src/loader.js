@@ -104,6 +104,9 @@ function Loader(lc){
 		if ( this.opt.events.type === "byname" ){
 			var eventName = res.type + "-" + res.name;
 		}
+		if ( this.opt.events.type === "all" ){
+			this.trigger(res.type + "-" + "loaded",{ res: res, status: status });
+		}
 		this.trigger(eventName,{ res: res, status: status });
 	}
 	
@@ -125,8 +128,10 @@ function Loader(lc){
 		return function(){
 			//console.info(req[i].res().name()," wait attach");
 			req[i].res().load(function(res){
-				self.trigger(res.type + "Loaded",res);
 				//console.info(req[i].res().name()," wait loaded");
+				if (self.opt.events){
+					setTimeout(function(){notify.call(self,res);},0);
+				}
 				if(!cd())done(true);
 				fn[i+1]();
 			});
@@ -139,6 +144,9 @@ function Loader(lc){
 			//console.info(req[i].res().name()," attach");
 			req[i].res().load(function(res){
 				//console.info(req[i].res().name()," loaded");
+				if (self.opt.events){
+					setTimeout(function(){notify.call(self,res);},0);
+				}
 				if(!cd())done(true);
 			});
 			fn[i+1]();
@@ -177,7 +185,44 @@ function Loader(lc){
 		var wait = setInterval(function(){
 			if(done()){
 				var _d = (typeof callback === "function") && callback();
-				//callback();
+				clearInterval(wait);
+			}
+		},1);
+	}
+	
+	
+	function _loadGet(req,callback){
+		var self = this;
+		var done = initDoneFn();
+		var cd = initCd(req.length-1);
+		
+		function getFn(i,req,fn,cd,done){
+			if (i===req.length-1){
+				return initLastFn.call(self,i,req,cd,done);
+			}
+			else if( req[i].meth === "wait" ){
+				return initWaitFn.call(self,i,req,cd,done,fn);
+			}
+			else {
+				return initNoWaitFn.call(self,i,req,cd,done,fn);
+			}
+		}
+		
+		var loadReq = (function(){
+			return function(){
+				var fn = [];
+				for(var i=req.length-1;i>=0;i-- ){
+					fn.unshift(getFn.call(self,i,req,fn,cd,done));
+				}
+				fn[0]();
+			};
+		})(req);
+		
+		var lr = ( req.length ) && setTimeout(loadReq,1);
+		/* wait until all ready */
+		var wait = setInterval(function(){
+			if(done()){
+				var _d = (typeof callback === "function") && callback();
 				clearInterval(wait);
 			}
 		},1);
@@ -209,7 +254,8 @@ function Loader(lc){
 			loadCSS:function(resName,callback){
 				_loadJsOrCss.call(this,this.config.getCssReq(resName),callback);
 			},
-			loadGET:function(id,resName){
+			loadGET:function(resName,callback){
+				_loadGet.call(this,this.config.getGetReq(resName),callback);
 				//console.log('loadHTML: ',resName);
 			},
 			trigger: function(evetType,extraParams){

@@ -43,6 +43,8 @@ function Resource(resName,resType,resConf){
 		var _d = (typeof callback === "function") && callback(res);
 	};
 	
+	this.data = function(data){ if(typeof data !== "undefined" ){ res.data = data; }; return res.data; };
+	
 	this.url = function(){return res.url;};
 	this.require = function(){return res.require;};
 	this.name = function(){return res.name;};
@@ -62,6 +64,7 @@ function Resource(resName,resType,resConf){
 	res.loading = false;
 	res.media = resConf.media || null;
 	res.attach = resConf.attach || "first";
+	res.data = null;
 	/* only for css:
 	 * 1) first ( attach on top of head )
 	 * 2) last ( append to head )

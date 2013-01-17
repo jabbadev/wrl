@@ -33,7 +33,7 @@
 			this.css1 = new Resource("a","css",{ attach: "last", url: "a.css" });
 			this.load = new Resource("a","js",{ url: "../libs/test-res/a.js" });
 			this.res3 = new Resource("a","js",{ url: "a.js", require: [ "b","z","c:wait","b:wait","x","y" ]});
-			
+			this.html = new Resource("a","get",{ url: "../libs/test-res/a.html" });
 		}
 	});
 	
@@ -64,7 +64,8 @@
 		equal(this.load.isLoaded(),true,"Resource a is loaded after call load function");
 		equal(this.css.attach(),"first","Attach css on top of the head");
 		equal(this.css1.attach(),"last","append css on head");
-		
+		deepEqual(this.html.data({html: "<div>Prova</div>"}),{html: "<div>Prova</div>"},"setter res.data ");
+		deepEqual(this.html.data().html,"<div>Prova</div>","getter res.data ");
 	});
 	
 	module('test [ Config ] object',{
@@ -100,7 +101,10 @@
 				a: {url: "a.css", attach: "last" },
 				b: {url: "b.js"}
 			},
-			get:{a: {url: "a.htm"}}
+			get:{
+				a: {url: "a.html", require: ["b" ] },
+				b: { url: "c.html" }
+			}
 		});
 		
 		var reslist = this.config.getJsReq('virtual');
@@ -155,7 +159,15 @@
 		equal(csslist[0].res().attach(),"last","append a.css");
 		equal(csslist[1].res().name(),"b","second css is b.css");
 		equal(csslist[1].res().name(),"b","attach b on top of head");
-
+		
+		var html = this.config.getGetReq('a');
+		deepEqual([ html[0].res().url(),html[1].res().url() ],[ "c.html","a.html" ],"list of get resource");
+		
+		html[0].res().isLoaded(true);
+		equal(this.config.getReady('a').ready,false,"get resources non ready");
+		html[1].res().isLoaded(true);
+		equal(this.config.getReady('a').ready,true,"get resources ready");
+		
 	});
 	
 	module('test jQuery.wrl',{
