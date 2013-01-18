@@ -5,3 +5,12 @@
 	font-style: italic;
 	text-align: center;
 }
+
+#boxA {
+	background-color: red;
+	font-style: italic;
+	text-align: center;
+	padding: 40px;
+	margin: 2px;
+	border: solid black 4px;
+}

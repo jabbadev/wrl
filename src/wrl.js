@@ -14,7 +14,7 @@
 			addLoader: function(lc){
 				//Loader.prototype.fnLoadJS = this.fnLoadJS;
 				//Loader.prototype.fnLoadCSS = this.fnLoadCSS;
-				//Loader.prototype.fnLoadGET = this.fnLoadGET;
+				Loader.prototype.fnLoadGET = this.fnLoadGET;
 				
 				var loader = $(new Loader(lc));
 				loader[0].trigger = $.proxy(loader.trigger,loader);
@@ -35,12 +35,15 @@
 				this.loaders[ln].loadCSS(jsName);
 				return this.loaders[ln];
 			},
-			loadHTML: function(ln,jsName){
-				this.loaders[ln].loadHTML(jsName);
+			loadGET: function(ln,jsName){
+				this.loaders[ln].loadGET(jsName);
 				return this.loaders[ln];
 			},
 			fnLoadGET: function(handler,res,callback){
-				console.log('function to load resources [ fnLoadGET ] ...');
+				$.get(res.url,function(data){
+					res.data = data;
+					handler(res,callback);
+				});
 			}
 		}
 	});

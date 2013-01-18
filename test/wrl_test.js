@@ -213,6 +213,10 @@
 					b: { url: "../libs/test-res/b.css", require: [ "z","y" ]},
 					z: { url: "../libs/test-res/z.css" },
 					y: { url: "../libs/test-res/y.css", attach: "last" }
+				},
+				get: {
+					a: {url: "../libs/test-res/a.html", require: ["b" ]},
+					b: {url: "../libs/test-res/b.html"}
 				}
 			}});
 		
@@ -232,9 +236,12 @@
 			});
 		}
 		
+		function get(callback){
+			calculator.loadGET("a",callback);
+		}
+		
 		BASE_TS = new Date().getTime();
 		calc1(function(reslist){
-			console.log(reslist);
 			equal(CALC1,100000,"javascript calc1 is loaded");
 		});
 		
@@ -244,6 +251,11 @@
 		
 		testCss(function(reslist){
 			equal($('#wrlbox').css('text-align'),"center","label wrlbox moved to center");
+		});
+		
+		get(function(reslist){
+			$('fieldset').append(reslist[1].data);
+			$('#boxB').append(reslist[0].data);
 		});
 		
 		setTimeout(function(){

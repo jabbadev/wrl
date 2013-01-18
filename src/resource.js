@@ -31,10 +31,10 @@ function Resource(resName,resType,resConf){
 	
 	this.load = function(callback){
 		res.loading = true;
-		//this.pluggedLoad(this.resLoadHandler,res,callback);
 		
 		var _d = ( res.type === "js" ) && this.pluggedLoadJS(this.resLoadHandler,res,callback);
 		_d = ( res.type === "css" ) && this.pluggedLoadCSS(this.resLoadHandler,res,callback);
+		_d = ( res.type === "get" ) && this.pluggedLoadGET(this.resLoadHandler,res,callback);
 	};
 	
 	this.resLoadHandler = function(res,callback){
@@ -70,10 +70,6 @@ function Resource(resName,resType,resConf){
 	 * 2) last ( append to head )
 	 * */
 }
-
-Resource.prototype.pluggedLoad = function(handler,res,callback){
-	handler(res,callback);
-};
 
 Resource.prototype.pluggedLoadJS = function(handler,res,callback){
 	handler(res,callback);

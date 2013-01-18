@@ -221,7 +221,7 @@ function Loader(lc){
 				_loadJsOrCss.call(this,this.config.getCssReq(resName),callback);
 			},
 			loadGET:function(resName,callback){
-				_loadGet.call(this,this.config.getGetReq(resName),callback);
+				_loadJsOrCss.call(this,this.config.getGetReq(resName),callback);
 			},
 			trigger: function(evetType,extraParams){
 				console.log('fire trigger ...',evetType,extraParams);
