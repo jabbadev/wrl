@@ -222,17 +222,17 @@
 		
 		function calc1(callback){
 			calculator.loadJS('calc1',callback);
-		};
+		}
 		
 		function testCss(callback){
 			calculator.loadCSS('virtual',callback);
-		};
+		}
 		
 		function load_e(callback){
-			e = 0;
+			window.e = 0;
 			calculator.loadJS('e');
 			calculator.on('js-e',function(event,eventData){
-				equal(e,100000,'event jsE script e.js is ready ');
+				equal(window.e,100000,'event jsE script e.js is ready ');
 			});
 		}
 		
@@ -240,9 +240,9 @@
 			calculator.loadGET("a",callback);
 		}
 		
-		BASE_TS = new Date().getTime();
+		window.BASE_TS = new Date().getTime();
 		calc1(function(reslist){
-			equal(CALC1,100000,"javascript calc1 is loaded");
+			equal(window.CALC1,100000,"javascript calc1 is loaded");
 		});
 		
 		load_e(function(reslist){

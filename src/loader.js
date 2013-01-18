@@ -98,11 +98,12 @@ function Loader(lc){
 	function notify(res){
 		var status = (this.opt.events.notifyStatus) && this.config[res.type+"Ready"](res.name);
 		
+		var eventName;
 		if ( this.opt.events.type === "onload" ) {
-			var eventName = res.type + "-" + "loaded";
+			eventName = res.type + "-" + "loaded";
 		}
 		if ( this.opt.events.type === "byname" ){
-			var eventName = res.type + "-" + res.name;
+			eventName = res.type + "-" + res.name;
 		}
 		if ( this.opt.events.type === "all" ){
 			this.trigger(res.type + "-" + "loaded",{ res: res, status: status });
@@ -119,7 +120,7 @@ function Loader(lc){
 				if (self.opt.events){
 					setTimeout(function(){notify.call(self,res);},0);
 				}
-				if(!cd())done(true);
+				if(!cd()){done(true);}
 			});
 		};
 	}
@@ -134,7 +135,7 @@ function Loader(lc){
 				if (self.opt.events){
 					setTimeout(function(){notify.call(self,res);},0);
 				}
-				if(!cd())done(true);
+				if(!cd()){done(true);}
 				fn[i+1]();
 			});
 		};
@@ -150,7 +151,7 @@ function Loader(lc){
 				if (self.opt.events){
 					setTimeout(function(){notify.call(self,res);},0);
 				}
-				if(!cd())done(true);
+				if(!cd()){done(true);}
 			});
 			fn[i+1]();
 		};

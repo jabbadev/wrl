@@ -25,7 +25,7 @@ function Config() {
 		var resList = [];
 		for(var i in _resList){
 			var _re = /^([\w|\W]+):([\w|\W]+)$/.exec(_resList[i]);
-			(_re)?resList.push({name:_re[1],meth:_re[2]}):resList.push({name:_resList[i],meth:null});
+			var _d = _re?resList.push({name:_re[1],meth:_re[2]}):resList.push({name:_resList[i],meth:null});
 		}
 		
 		var _dummy;

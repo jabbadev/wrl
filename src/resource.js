@@ -43,7 +43,7 @@ function Resource(resName,resType,resConf){
 		var _d = (typeof callback === "function") && callback(res);
 	};
 	
-	this.data = function(data){ if(typeof data !== "undefined" ){ res.data = data; }; return res.data; };
+	this.data = function(data){ if(typeof data !== "undefined" ){ res.data = data; } return res.data; };
 	
 	this.url = function(){return res.url;};
 	this.require = function(){return res.require;};
