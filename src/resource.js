@@ -30,11 +30,16 @@ function Resource(resName,resType,resConf){
 	};
 	
 	this.load = function(callback){
-		res.loading = true;
 		
+		if (!res.loaded && !res.loading ){
+		res.loading = true;
 		var _d = ( res.type === "js" ) && this.pluggedLoadJS(this.resLoadHandler,res,callback);
 		_d = ( res.type === "css" ) && this.pluggedLoadCSS(this.resLoadHandler,res,callback);
 		_d = ( res.type === "get" ) && this.pluggedLoadGET(this.resLoadHandler,res,callback);
+		}
+		else {
+			console.log('skeep loading ....');	
+		}
 	};
 	
 	this.resLoadHandler = function(res,callback){
