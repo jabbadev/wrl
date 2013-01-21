@@ -32,19 +32,23 @@ function Resource(resName,resType,resConf){
 	this.load = function(callback){
 		
 		if (!res.loaded && !res.loading ){
-		res.loading = true;
-		var _d = ( res.type === "js" ) && this.pluggedLoadJS(this.resLoadHandler,res,callback);
-		_d = ( res.type === "css" ) && this.pluggedLoadCSS(this.resLoadHandler,res,callback);
-		_d = ( res.type === "get" ) && this.pluggedLoadGET(this.resLoadHandler,res,callback);
+			res.loading = true;
+			res.statinfo = "resource in loading";
+			res.statcode = 1;
+			var _d = ( res.type === "js" ) && this.pluggedLoadJS(this.resLoadHandler,res,callback);
+			_d = ( res.type === "css" ) && this.pluggedLoadCSS(this.resLoadHandler,res,callback);
+			_d = ( res.type === "get" ) && this.pluggedLoadGET(this.resLoadHandler,res,callback);
 		}
 		else {
-			console.log('skeep loading ....');	
+			var _d = (typeof callback === "function") && callback(res);
 		}
 	};
 	
 	this.resLoadHandler = function(res,callback){
 		res.loading = false;
 		res.loaded = true;
+		res.statinfo = "resource is loaded";
+		res.statcode = 2;
 		var _d = (typeof callback === "function") && callback(res);
 	};
 	
@@ -55,6 +59,8 @@ function Resource(resName,resType,resConf){
 	this.name = function(){return res.name;};
 	this.isVirtual = function(){return res.virtual;};
 	this.attach = function(){return res.attach;};
+	this.statinfo = function(){return res.statinfo;};
+	this.statcode = function(){return res.statcode;};
 	
 	/* Init Instance */
 	var res = {};
@@ -70,6 +76,8 @@ function Resource(resName,resType,resConf){
 	res.media = resConf.media || null;
 	res.attach = resConf.attach || "first";
 	res.data = null;
+	res.statinfo = "resourse not loaded";
+	res.statcode = 0;
 	/* only for css:
 	 * 1) first ( attach on top of head )
 	 * 2) last ( append to head )

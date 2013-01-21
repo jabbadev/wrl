@@ -34,6 +34,7 @@
 			this.load = new Resource("a","js",{ url: "../libs/test-res/a.js" });
 			this.res3 = new Resource("a","js",{ url: "a.js", require: [ "b","z","c:wait","b:wait","x","y" ]});
 			this.html = new Resource("a","get",{ url: "../libs/test-res/a.html" });
+			this.reload = new Resource("reload","js",{ url: "reload.js" });
 		}
 	});
 	
@@ -61,6 +62,10 @@
 		equal(pa().isLoaded(),true,"res is loaded [ access by pointer ]");
 		ok(!this.resLoaded,'check res not loaded');
 		this.load.load(function(){$this.resLoaded = true; ok($this.resLoaded,'callback resource is loaded');});
+		
+		this.reload.isLoading(true);
+		this.reload.load();
+		
 		equal(this.load.isLoaded(),true,"Resource a is loaded after call load function");
 		equal(this.css.attach(),"first","Attach css on top of the head");
 		equal(this.css1.attach(),"last","append css on head");
@@ -72,9 +77,9 @@
 		setup: function(){
 			var $this = this;
 			this.config = new Config();
-			this.q = false;
+			this.q = 0;
 			this.config.plugLoadJS(function(handler,res,callback){
-				$this.q = true;
+				$this.q = $this.q + 1;
 				handler(res,callback);	
 			});
 		}
@@ -150,9 +155,17 @@
 		ok(res.res().isLoaded() === this.config.jsLoaded('e'),"resource e config are the same");
 		
 		ok(!this.q,'check pre load q res ...');
+		this.config.jsLoaded('q',false); /* Reset for the test */
+		this.config.jsLoading('q',false); /* Reset for the test */
 		var $this = this;
 		res = this.config.getJsReq('q')[0];
-		res.res().load(function(){ ok($this.q,"res q loaded ...."); });
+		res.res().load(function(){equal($this.q,1,"res q loaded");});
+		this.config.jsLoaded('q',false);
+		res.res().load(function(res){equal($this.q,2,"res q reloaded after reset");});
+		res.res().load(function(res){
+			equal($this.q,2,"res q ready load skipped");
+			equal(res.statcode,2,"res status code 2 resource already loaded");
+		});
 		
 		var csslist = this.config.getCssReq('virtual');
 		equal(csslist[0].res().name(),"a","first css is a.css");
