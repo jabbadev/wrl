@@ -31,16 +31,17 @@ function Resource(resName,resType,resConf){
 	
 	this.load = function(callback){
 		
+		var _d = null;
 		if (!res.loaded && !res.loading ){
 			res.loading = true;
 			res.statinfo = "resource in loading";
 			res.statcode = 1;
-			var _d = ( res.type === "js" ) && this.pluggedLoadJS(this.resLoadHandler,res,callback);
+			_d = ( res.type === "js" ) && this.pluggedLoadJS(this.resLoadHandler,res,callback);
 			_d = ( res.type === "css" ) && this.pluggedLoadCSS(this.resLoadHandler,res,callback);
 			_d = ( res.type === "get" ) && this.pluggedLoadGET(this.resLoadHandler,res,callback);
 		}
 		else {
-			var _d = (typeof callback === "function") && callback(res);
+			_d = (typeof callback === "function") && callback(res);
 		}
 	};
 	
