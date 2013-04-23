@@ -13,9 +13,13 @@ module.exports = function(grunt) {
     },
     concat: {
       dist: {
-        src: ['<banner:meta.banner>',
-              '<file_strip_banner:src/wrl.js>','src/config.js'],
-        dest: 'dist/<%= pkg.name %>.js'
+      	files: [
+      		//{src: ['<banner:meta.banner>','<file_strip_banner:src/wrl.js>','src/head_wrl.js',
+      		{src: ['<banner:meta.banner>','src/head_wrl.js',
+      						 'src/config.js','src/resource.js','src/loader.js',
+      						 'src/body_wrl.js','src/tail_wrl.js'],
+        	 dest: 'dist/<%= pkg.name %>.js'}
+      	]
       }
     },
     min: {
