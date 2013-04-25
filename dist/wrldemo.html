@@ -1,0 +1,31 @@
+<html>
+	<head>
+		<script src="../libs/jquery/jquery.js" type="text/javascript" ></script>
+		<script src="wrl.js" type="text/javascript" ></script>
+		<script type="text/javascript" >
+		var lt = $.wrl.addLoader({name: 'test',
+			config: {
+			js:{'dep': { url: "../libs/test-res/dep.js" ,depon: ['e','f'] }, 'req': { url: "../libs/test-res/req.js" ,require: ['e','f'] }, a: {url: "a.js", require: ['d'] }, b: {url: "b.js"}, c: {url: "c.js"},
+				d: {url: "../libs/test-res/d.js", require: ['e','f'], depon: [ "z" ] }, e: { url: "../libs/test-res/e.js" }, f: {url: "../libs/test-res/f.js"},
+				z: { url: "z.js", depon: ["p","q"] },p: {url: "p.js"},q: {url: "q.js"} },
+			css:{a: {url: "a.css" }, b: {url: "b.js" } },
+			html:{ a: {url: "a.htm"}}
+		}});
+		
+		$(function(){
+			console.log('dom ready ....');
+			console.log('test loader: ',lt);
+		});
+		</script>
+	</head>
+	<body>
+		<div id="wrl">
+  		<fieldset>
+  			<legend>Resource for visual test</legend>
+  			<div id="wrlbox">
+  				<p>wrlbox [ loadCSS test ]</p>
+  			</div>
+  		</fieldset>
+  	</div>
+	</body>
+</html>
