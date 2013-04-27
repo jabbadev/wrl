@@ -183,6 +183,8 @@
 		
 	});
 	
+	/*
+	
 	module('test jQuery.wrl',{
 		setup: function(){
 			this.config = new Config();
@@ -276,5 +278,6 @@
 		},5000);
 		
 	});
+	*/	
 	
 }(jQuery));
