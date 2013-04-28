@@ -1,4 +1,4 @@
-/*! Web Resource Loader - v0.1.0 - 2013-04-24
+/*! Web Resource Loader - v0.1.0 - 2013-04-28
 * Copyright (c) 2013 Francesco Dalpra'; Licensed MIT */
 
 (function($) {
