@@ -1,5 +1,5 @@
 /*
-	* wrl
+	* jquery.wrl
 	* 
 	*
 	* Copyright (c) 2012 Francesco Dalpra'
