@@ -1,4 +1,4 @@
-$.extend(
+	$.extend(
 		{ wrl: {
 			loaders: {},
 			addLoader: function(lc){
