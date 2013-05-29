@@ -1,0 +1,11 @@
+@CHARSET "ISO-8859-1";
+
+#boxB {
+	background-color: black;
+	font-style: italic;
+	text-align: center;
+	color: yellow;
+	padding: 40px;
+	border: solid yellow 4px;
+	margin: 20px;
+}

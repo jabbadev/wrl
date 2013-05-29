@@ -1,11 +1,11 @@
 {
-  "name": "wrl",
+  "name": "jquery.wrl",
   "title": "Web Resource Loader",
   "description": "javascript and css loader",
   "version": "0.1.0",
   "homepage": "",
   "author": {
-    "name": "Francesco Dalpra'",
+    "name": "Francesco Dalprà",
     "email": "jabba.dev@gmail.com"
   },
   "repository": {

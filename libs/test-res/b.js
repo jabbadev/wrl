@@ -1,7 +1,8 @@
 (function(w){
 	b = 0;
-	for(var i=0;i<5000;i++){b++;}
+	c = w.getC();
 	w.getB = function getB(){
-		return b * w.getC();
+		return b * c;
 	};
+	w.B_TS = new Date().getTime() - w.BASE_TS;
 })(window);

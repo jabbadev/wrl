@@ -13,9 +13,11 @@ module.exports = function(grunt) {
     },
     concat: {
       dist: {
-        src: ['<banner:meta.banner>',
-              '<file_strip_banner:src/wrl.js>','src/config.js'],
-        dest: 'dist/<%= pkg.name %>.js'
+						//{src: ['<banner:meta.banner>','<file_strip_banner:src/wrl.js>','src/head_wrl.js',
+						src: ['<banner:meta.banner>','src/head_wrl.js',
+										'src/config.js','src/resource.js','src/loader.js',
+										'src/body_wrl.js','src/tail_wrl.js'],
+						dest: 'dist/<%= pkg.name %>.js'
       }
     },
     min: {
@@ -28,7 +30,8 @@ module.exports = function(grunt) {
       files: ['test/**/*.html']
     },
     lint: {
-      files: ['grunt.js', 'src/**/*.js', 'test/**/*.js']
+      //files: ['grunt.js', 'src/**/*.js', 'test/**/*.js'],exclude: ['src/head_wrl.js','src/tail_wrl.js']
+      files: [ 'grunt.js', 'src/config.js', 'test/loader.js','src/resource.js' ]
     },
     watch: {
       files: '<config:lint.files>',

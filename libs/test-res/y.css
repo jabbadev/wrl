@@ -1,0 +1,9 @@
+@CHARSET "ISO-8859-1";
+
+#wrlbox {
+	background-color: rgb(0,255,0);
+	font-style: oblique;
+	text-align: center;
+	padding: 40px;
+	border: solid black 4px;
+}

@@ -12,10 +12,16 @@ In your web page:
 
 ```html
 <script src="jquery.js"></script>
-<script src="dist/wrl.min.js"></script>
+<script src="dist/jquery.wrl.min.js"></script>
 <script>
 jQuery(function($) {
-  $.awesome(); // "awesome"
+  $.wrl.addLoader({	name: '... loader name ...',
+													config: {
+														js: { ... javascript resources ... },
+														css:{ ... css resources ... },
+														html:{ ... static get resources ... }
+													}
+	});
 });
 </script>
 ```
