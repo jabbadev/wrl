@@ -23,7 +23,7 @@
 			
 	});
 	
-	asyncTest( "Async test loading scripts",3, function() {	
+	asyncTest( "Async test loading scripts",4, function() {	
 			
 		var calculator = $.wrl.addLoader({
 			name: 'calc',
@@ -70,6 +70,12 @@
 			calculator.loadGET("a",callback);
 		}
 		
+		function testWebConfig(callback){
+			$.wrl.addLoader({ name: "web", config: "../libs/test-res/webconf.json" },function(loader){
+				loader.loadJS("web",callback);
+			});
+		}
+		
 		window.BASE_TS = new Date().getTime();
 		calc1(function(reslist){
 			equal(window.CALC1,100000,"javascript calc1 is loaded");
@@ -83,6 +89,11 @@
 			equal($('#wrlbox').css('text-align'),"center","label wrlbox moved to center");
 		});
 		
+		testWebConfig(function(){
+			equal(window.MESSAGE,"Hello [ Francesco ]");
+			console.log(window.MESSAGE);
+		});
+		
 		get(function(reslist){
 			$('fieldset').append(reslist[1].data);
 			$('#boxB').append(reslist[0].data);
@@ -90,7 +101,7 @@
 		
 		setTimeout(function(){
 			start();
-		},5000);
+		},6000);
 		
 	});
 	

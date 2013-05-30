@@ -1,0 +1,5 @@
+{"js": {
+		"web": { "url": "../libs/test-res/web.js", "require": ["web1:wait","web2:wait"] },
+		"web1": { "url": "../libs/test-res/web1.js" },
+		"web2": { "url": "../libs/test-res/web2.js" }
+}}

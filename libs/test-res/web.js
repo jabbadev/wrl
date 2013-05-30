@@ -1,0 +1,1 @@
+window.MESSAGE = window.GREETINGS + window.PERSON;
