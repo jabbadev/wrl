@@ -1,4 +1,4 @@
-/*! Web Resource Loader - v0.1.0 - 2013-05-30
+/*! Web Resource Loader - v0.1.0 - 2013-05-31
 * Copyright (c) 2013 Francesco Dalprà; Licensed MIT */
 
 /*
@@ -565,15 +565,15 @@ Loader.prototype.fnLoadGET = function(handler,res,callback){
 				};
 			},
 			loadJS: function(ln,jsName,callback){
-				return this.loaders[ln].loadJS(jsName);
-				//return loaders[ln];
-			},
-			loadCSS: function(ln,jsName){
-				this.loaders[ln].loadCSS(jsName);
+				return this.loaders[ln].loadJS(jsName,callback);
 				return this.loaders[ln];
 			},
-			loadGET: function(ln,jsName){
-				this.loaders[ln].loadGET(jsName);
+			loadCSS: function(ln,jsName,callback){
+				this.loaders[ln].loadCSS(jsName,callback);
+				return this.loaders[ln];
+			},
+			loadGET: function(ln,jsName,callback){
+				this.loaders[ln].loadGET(jsName,callback);
 				return this.loaders[ln];
 			},
 			fnLoadGET: function(handler,res,callback){

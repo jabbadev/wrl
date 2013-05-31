@@ -34,15 +34,15 @@
 				};
 			},
 			loadJS: function(ln,jsName,callback){
-				return this.loaders[ln].loadJS(jsName);
-				//return loaders[ln];
-			},
-			loadCSS: function(ln,jsName){
-				this.loaders[ln].loadCSS(jsName);
+				return this.loaders[ln].loadJS(jsName,callback);
 				return this.loaders[ln];
 			},
-			loadGET: function(ln,jsName){
-				this.loaders[ln].loadGET(jsName);
+			loadCSS: function(ln,jsName,callback){
+				this.loaders[ln].loadCSS(jsName,callback);
+				return this.loaders[ln];
+			},
+			loadGET: function(ln,jsName,callback){
+				this.loaders[ln].loadGET(jsName,callback);
 				return this.loaders[ln];
 			},
 			fnLoadGET: function(handler,res,callback){
